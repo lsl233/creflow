@@ -2,10 +2,30 @@ import { useState } from 'react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { api } from '#/lib/api'
 import { storage } from '#/lib/storage'
+import { FormFieldWithExplanation } from '#/components/FormFieldWithExplanation'
 
 export const Route = createFileRoute('/')({
   component: HomePage,
 })
+
+const FIELD_EXPLANATIONS = {
+  niche: {
+    why: 'AI 需要了解你的专业领域和细分市场，才能生成与你受众相关、有针对性的内容。清晰的定位帮助 AI 理解你希望覆盖的话题范围。',
+    impact: '内容定位决定了整个内容策略的走向——从选题方向、语言风格到专业术语的使用。专注的定位能吸引更精准的受众群体。',
+  },
+  goal: {
+    why: '不同的运营目标需要完全不同的内容策略。涨粉和变现在内容结构、互动设计上都有显著差异。',
+    impact: '选择「涨粉」会让内容更注重个人魅力展示和互动性；选择「变现」会侧重信任建立和行动号召。',
+  },
+  persona: {
+    why: '你呈现给受众的形象会影响内容的表达方式和语气。真实人设更容易建立情感连接，专业人设更容易建立权威感。',
+    impact: '「真实」人设会让内容更口语化、有个人故事、更接地气；「专业」人设会让内容更严谨、有行业洞察、更具权威性。',
+  },
+  frequency: {
+    why: '小红书算法偏好持续稳定的更新频率。保持规律发布能提高账号活跃度，获得更多推荐流量。',
+    impact: '高频发布（5-7次/周）能快速积累粉丝和曝光；低频发布（1-2次/周）能让每篇内容更精致。建议选择你能长期坚持的频率。',
+  },
+}
 
 function HomePage() {
   const navigate = useNavigate()
@@ -55,35 +75,36 @@ function HomePage() {
         <h1 className="mb-2 text-2xl font-bold text-[var(--sea-ink)] sm:text-3xl">
           告诉我你想做什么
         </h1>
-        <p className="mb-6 text-sm text-[var(--sea-ink-soft)]">
+        <p className="mb-6 text-base text-[var(--sea-ink-soft)]">
           输入你的内容定位，我来帮你规划一周的内容
         </p>
 
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-6">
           {/* 领域/定位 */}
-          <div>
-            <label className="mb-2 block text-sm font-medium text-[var(--sea-ink)]">
-              你的内容定位 <span className="text-[var(--xhs-primary)]">*</span>
-            </label>
+          <FormFieldWithExplanation
+            label="你的内容定位"
+            required
+            explanation={FIELD_EXPLANATIONS.niche}
+          >
             <input
               type="text"
               value={niche}
               onChange={(e) => setNiche(e.target.value)}
               placeholder="例如：职场成长、美食探店、宝妈育儿..."
-              className="w-full rounded-xl border border-[var(--line)] bg-white px-4 py-3 text-[var(--sea-ink)] placeholder:text-gray-400 focus:border-[var(--xhs-primary)] focus:outline-none focus:ring-2 focus:ring-[rgba(255,36,66,0.1)]"
+              className="w-full rounded-xl border border-[var(--line)] bg-white px-4 py-3 text-base text-[var(--sea-ink)] placeholder:text-gray-400 focus:border-[var(--xhs-primary)] focus:outline-none focus:ring-2 focus:ring-[rgba(255,36,66,0.1)]"
             />
-          </div>
+          </FormFieldWithExplanation>
 
           {/* 目标 */}
-          <div>
-            <label className="mb-2 block text-sm font-medium text-[var(--sea-ink)]">
-              你的目标是什么？
-            </label>
+          <FormFieldWithExplanation
+            label="你的目标是什么？"
+            explanation={FIELD_EXPLANATIONS.goal}
+          >
             <div className="flex gap-3">
               <button
                 type="button"
                 onClick={() => setGoal('涨粉')}
-                className={`flex-1 rounded-xl border px-4 py-3 text-sm font-medium transition ${
+                className={`flex-1 rounded-xl border px-4 py-3 text-base font-medium transition ${
                   goal === '涨粉'
                     ? 'border-[var(--xhs-primary)] bg-[rgba(255,36,66,0.05)] text-[var(--xhs-primary)]'
                     : 'border-[var(--line)] text-[var(--sea-ink-soft)] hover:border-[var(--xhs-primary)]'
@@ -94,7 +115,7 @@ function HomePage() {
               <button
                 type="button"
                 onClick={() => setGoal('变现')}
-                className={`flex-1 rounded-xl border px-4 py-3 text-sm font-medium transition ${
+                className={`flex-1 rounded-xl border px-4 py-3 text-base font-medium transition ${
                   goal === '变现'
                     ? 'border-[var(--xhs-primary)] bg-[rgba(255,36,66,0.05)] text-[var(--xhs-primary)]'
                     : 'border-[var(--line)] text-[var(--sea-ink-soft)] hover:border-[var(--xhs-primary)]'
@@ -103,18 +124,18 @@ function HomePage() {
                 变现
               </button>
             </div>
-          </div>
+          </FormFieldWithExplanation>
 
           {/* 人设 */}
-          <div>
-            <label className="mb-2 block text-sm font-medium text-[var(--sea-ink)]">
-              你想呈现什么样的人设？
-            </label>
+          <FormFieldWithExplanation
+            label="你想呈现什么样的人设？"
+            explanation={FIELD_EXPLANATIONS.persona}
+          >
             <div className="flex gap-3">
               <button
                 type="button"
                 onClick={() => setPersona('真实')}
-                className={`flex-1 rounded-xl border px-4 py-3 text-sm font-medium transition ${
+                className={`flex-1 rounded-xl border px-4 py-3 text-base font-medium transition ${
                   persona === '真实'
                     ? 'border-[var(--xhs-primary)] bg-[rgba(255,36,66,0.05)] text-[var(--xhs-primary)]'
                     : 'border-[var(--line)] text-[var(--sea-ink-soft)] hover:border-[var(--xhs-primary)]'
@@ -125,7 +146,7 @@ function HomePage() {
               <button
                 type="button"
                 onClick={() => setPersona('专业')}
-                className={`flex-1 rounded-xl border px-4 py-3 text-sm font-medium transition ${
+                className={`flex-1 rounded-xl border px-4 py-3 text-base font-medium transition ${
                   persona === '专业'
                     ? 'border-[var(--xhs-primary)] bg-[rgba(255,36,66,0.05)] text-[var(--xhs-primary)]'
                     : 'border-[var(--line)] text-[var(--sea-ink-soft)] hover:border-[var(--xhs-primary)]'
@@ -134,27 +155,29 @@ function HomePage() {
                 专业
               </button>
             </div>
-          </div>
+          </FormFieldWithExplanation>
 
           {/* 发布频率 */}
-          <div>
-            <label className="mb-2 block text-sm font-medium text-[var(--sea-ink)]">
-              每周发布几次？
-            </label>
-            <input
-              type="number"
-              min={1}
-              max={7}
-              value={frequency}
-              onChange={(e) => setFrequency(Math.max(1, Math.min(7, parseInt(e.target.value) || 1)))}
-              className="w-24 rounded-xl border border-[var(--line)] bg-white px-4 py-3 text-[var(--sea-ink)] focus:border-[var(--xhs-primary)] focus:outline-none focus:ring-2 focus:ring-[rgba(255,36,66,0.1)]"
-            />
-            <span className="ml-3 text-sm text-[var(--sea-ink-soft)]">次/周</span>
-          </div>
+          <FormFieldWithExplanation
+            label="每周发布几次？"
+            explanation={FIELD_EXPLANATIONS.frequency}
+          >
+            <div className="flex items-center gap-4">
+              <input
+                type="number"
+                min={1}
+                max={7}
+                value={frequency}
+                onChange={(e) => setFrequency(Math.max(1, Math.min(7, parseInt(e.target.value) || 1)))}
+                className="w-20 rounded-xl border border-[var(--line)] bg-white px-4 py-3 text-base text-[var(--sea-ink)] focus:border-[var(--xhs-primary)] focus:outline-none focus:ring-2 focus:ring-[rgba(255,36,66,0.1)]"
+              />
+              <span className="text-base text-[var(--sea-ink-soft)]">次/周</span>
+            </div>
+          </FormFieldWithExplanation>
 
           {/* 错误提示 */}
           {error && (
-            <p className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-500">
+            <p className="rounded-lg bg-red-50 px-4 py-3 text-base text-red-500">
               {error}
             </p>
           )}

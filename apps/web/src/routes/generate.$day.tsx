@@ -155,7 +155,7 @@ function GeneratePage() {
             <h2 className="text-sm font-medium text-[var(--sea-ink-soft)]">标题</h2>
             <button
               onClick={() => copyToClipboard(generatedPost.title, 'title')}
-              className="flex items-center gap-1 text-xs text-[var(--xhs-primary)] transition hover:opacity-70"
+              className="flex items-center gap-1 text-sm text-[var(--xhs-primary)] transition hover:opacity-70"
             >
               {copied === 'title' ? (
                 <>
@@ -185,7 +185,7 @@ function GeneratePage() {
             <h2 className="text-sm font-medium text-[var(--sea-ink-soft)]">正文</h2>
             <button
               onClick={() => copyToClipboard(generatedPost.content, 'content')}
-              className="flex items-center gap-1 text-xs text-[var(--xhs-primary)] transition hover:opacity-70"
+              className="flex items-center gap-1 text-sm text-[var(--xhs-primary)] transition hover:opacity-70"
             >
               {copied === 'content' ? (
                 <>
@@ -215,7 +215,7 @@ function GeneratePage() {
             <h2 className="text-sm font-medium text-[var(--sea-ink-soft)]">标签</h2>
             <button
               onClick={() => copyToClipboard(generatedPost.tags.map(t => `#${t}`).join(' '), 'tags')}
-              className="flex items-center gap-1 text-xs text-[var(--xhs-primary)] transition hover:opacity-70"
+              className="flex items-center gap-1 text-sm text-[var(--xhs-primary)] transition hover:opacity-70"
             >
               {copied === 'tags' ? (
                 <>
