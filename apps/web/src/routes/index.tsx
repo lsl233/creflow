@@ -1,86 +1,195 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { useState } from 'react'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { api } from '#/lib/api'
+import { storage } from '#/lib/storage'
 
-export const Route = createFileRoute('/')({ component: App })
+export const Route = createFileRoute('/')({
+  component: HomePage,
+})
 
-function App() {
+function HomePage() {
+  const navigate = useNavigate()
+  const [niche, setNiche] = useState('')
+  const [goal, setGoal] = useState<'涨粉' | '变现'>('涨粉')
+  const [persona, setPersona] = useState<'真实' | '专业'>('真实')
+  const [frequency, setFrequency] = useState(2)
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    setError('')
+
+    if (!niche.trim()) {
+      setError('请输入你的内容定位')
+      return
+    }
+
+    setLoading(true)
+
+    try {
+      const response = await api.generateContentPlan({
+        niche: niche.trim(),
+        goal,
+        persona,
+        frequency,
+      })
+
+      if (response.data) {
+        storage.saveContentPlan(response.data, { niche: niche.trim(), goal, persona, frequency })
+        navigate({ to: '/calendar' })
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : '生成失败，请重试')
+    } finally {
+      setLoading(false)
+    }
+  }
+
   return (
-    <main className="page-wrap px-4 pb-8 pt-14">
-      <section className="island-shell rise-in relative overflow-hidden rounded-[2rem] px-6 py-10 sm:px-10 sm:py-14">
-        <div className="pointer-events-none absolute -left-20 -top-24 h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(79,184,178,0.32),transparent_66%)]" />
-        <div className="pointer-events-none absolute -bottom-20 -right-20 h-56 w-56 rounded-full bg-[radial-gradient(circle,rgba(47,106,74,0.18),transparent_66%)]" />
-        <p className="island-kicker mb-3">TanStack Start Base Template</p>
-        <h1 className="display-title mb-5 max-w-3xl text-4xl leading-[1.02] font-bold tracking-tight text-[var(--sea-ink)] sm:text-6xl">
-          Start simple, ship quickly.
+    <main className="page-wrap px-4 pb-8 pt-10">
+      <section className="island-shell rise-in relative overflow-hidden rounded-2xl px-6 py-8 sm:px-8 sm:py-10">
+        <div className="pointer-events-none absolute -left-16 -top-16 h-48 w-48 rounded-full bg-gradient-to-br from-[rgba(255,36,66,0.15)] to-transparent" />
+        <div className="pointer-events-none absolute -bottom-16 -right-16 h-48 w-48 rounded-full bg-gradient-to-tl from-[rgba(251,114,153,0.12)] to-transparent" />
+
+        <h1 className="mb-2 text-2xl font-bold text-[var(--sea-ink)] sm:text-3xl">
+          告诉我你想做什么
         </h1>
-        <p className="mb-8 max-w-2xl text-base text-[var(--sea-ink-soft)] sm:text-lg">
-          This base starter intentionally keeps things light: two routes, clean
-          structure, and the essentials you need to build from scratch.
+        <p className="mb-6 text-sm text-[var(--sea-ink-soft)]">
+          输入你的内容定位，我来帮你规划一周的内容
         </p>
-        <div className="flex flex-wrap gap-3">
-          <a
-            href="/about"
-            className="rounded-full border border-[rgba(50,143,151,0.3)] bg-[rgba(79,184,178,0.14)] px-5 py-2.5 text-sm font-semibold text-[var(--lagoon-deep)] no-underline transition hover:-translate-y-0.5 hover:bg-[rgba(79,184,178,0.24)]"
-          >
-            About This Starter
-          </a>
-          <a
-            href="https://tanstack.com/router"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="rounded-full border border-[rgba(23,58,64,0.2)] bg-white/50 px-5 py-2.5 text-sm font-semibold text-[var(--sea-ink)] no-underline transition hover:-translate-y-0.5 hover:border-[rgba(23,58,64,0.35)]"
-          >
-            Router Guide
-          </a>
-        </div>
-      </section>
 
-      <section className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {[
-          [
-            'Type-Safe Routing',
-            'Routes and links stay in sync across every page.',
-          ],
-          [
-            'Server Functions',
-            'Call server code from your UI without creating API boilerplate.',
-          ],
-          [
-            'Streaming by Default',
-            'Ship progressively rendered responses for faster experiences.',
-          ],
-          [
-            'Tailwind Native',
-            'Design quickly with utility-first styling and reusable tokens.',
-          ],
-        ].map(([title, desc], index) => (
-          <article
-            key={title}
-            className="island-shell feature-card rise-in rounded-2xl p-5"
-            style={{ animationDelay: `${index * 90 + 80}ms` }}
-          >
-            <h2 className="mb-2 text-base font-semibold text-[var(--sea-ink)]">
-              {title}
-            </h2>
-            <p className="m-0 text-sm text-[var(--sea-ink-soft)]">{desc}</p>
-          </article>
-        ))}
-      </section>
+        <form onSubmit={handleSubmit} className="space-y-5">
+          {/* 领域/定位 */}
+          <div>
+            <label className="mb-2 block text-sm font-medium text-[var(--sea-ink)]">
+              你的内容定位 <span className="text-[var(--xhs-primary)]">*</span>
+            </label>
+            <input
+              type="text"
+              value={niche}
+              onChange={(e) => setNiche(e.target.value)}
+              placeholder="例如：职场成长、美食探店、宝妈育儿..."
+              className="w-full rounded-xl border border-[var(--line)] bg-white px-4 py-3 text-[var(--sea-ink)] placeholder:text-gray-400 focus:border-[var(--xhs-primary)] focus:outline-none focus:ring-2 focus:ring-[rgba(255,36,66,0.1)]"
+            />
+          </div>
 
-      <section className="island-shell mt-8 rounded-2xl p-6">
-        <p className="island-kicker mb-2">Quick Start</p>
-        <ul className="m-0 list-disc space-y-2 pl-5 text-sm text-[var(--sea-ink-soft)]">
-          <li>
-            Edit <code>src/routes/index.tsx</code> to customize the home page.
-          </li>
-          <li>
-            Update <code>src/components/Header.tsx</code> and{' '}
-            <code>src/components/Footer.tsx</code> for brand links.
-          </li>
-          <li>
-            Add routes in <code>src/routes</code> and tweak visual tokens in{' '}
-            <code>src/styles.css</code>.
-          </li>
-        </ul>
+          {/* 目标 */}
+          <div>
+            <label className="mb-2 block text-sm font-medium text-[var(--sea-ink)]">
+              你的目标是什么？
+            </label>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => setGoal('涨粉')}
+                className={`flex-1 rounded-xl border px-4 py-3 text-sm font-medium transition ${
+                  goal === '涨粉'
+                    ? 'border-[var(--xhs-primary)] bg-[rgba(255,36,66,0.05)] text-[var(--xhs-primary)]'
+                    : 'border-[var(--line)] text-[var(--sea-ink-soft)] hover:border-[var(--xhs-primary)]'
+                }`}
+              >
+                涨粉
+              </button>
+              <button
+                type="button"
+                onClick={() => setGoal('变现')}
+                className={`flex-1 rounded-xl border px-4 py-3 text-sm font-medium transition ${
+                  goal === '变现'
+                    ? 'border-[var(--xhs-primary)] bg-[rgba(255,36,66,0.05)] text-[var(--xhs-primary)]'
+                    : 'border-[var(--line)] text-[var(--sea-ink-soft)] hover:border-[var(--xhs-primary)]'
+                }`}
+              >
+                变现
+              </button>
+            </div>
+          </div>
+
+          {/* 人设 */}
+          <div>
+            <label className="mb-2 block text-sm font-medium text-[var(--sea-ink)]">
+              你想呈现什么样的人设？
+            </label>
+            <div className="flex gap-3">
+              <button
+                type="button"
+                onClick={() => setPersona('真实')}
+                className={`flex-1 rounded-xl border px-4 py-3 text-sm font-medium transition ${
+                  persona === '真实'
+                    ? 'border-[var(--xhs-primary)] bg-[rgba(255,36,66,0.05)] text-[var(--xhs-primary)]'
+                    : 'border-[var(--line)] text-[var(--sea-ink-soft)] hover:border-[var(--xhs-primary)]'
+                }`}
+              >
+                真实
+              </button>
+              <button
+                type="button"
+                onClick={() => setPersona('专业')}
+                className={`flex-1 rounded-xl border px-4 py-3 text-sm font-medium transition ${
+                  persona === '专业'
+                    ? 'border-[var(--xhs-primary)] bg-[rgba(255,36,66,0.05)] text-[var(--xhs-primary)]'
+                    : 'border-[var(--line)] text-[var(--sea-ink-soft)] hover:border-[var(--xhs-primary)]'
+                }`}
+              >
+                专业
+              </button>
+            </div>
+          </div>
+
+          {/* 发布频率 */}
+          <div>
+            <label className="mb-2 block text-sm font-medium text-[var(--sea-ink)]">
+              每周发布几次？
+            </label>
+            <input
+              type="number"
+              min={1}
+              max={7}
+              value={frequency}
+              onChange={(e) => setFrequency(Math.max(1, Math.min(7, parseInt(e.target.value) || 1)))}
+              className="w-24 rounded-xl border border-[var(--line)] bg-white px-4 py-3 text-[var(--sea-ink)] focus:border-[var(--xhs-primary)] focus:outline-none focus:ring-2 focus:ring-[rgba(255,36,66,0.1)]"
+            />
+            <span className="ml-3 text-sm text-[var(--sea-ink-soft)]">次/周</span>
+          </div>
+
+          {/* 错误提示 */}
+          {error && (
+            <p className="rounded-lg bg-red-50 px-4 py-2 text-sm text-red-500">
+              {error}
+            </p>
+          )}
+
+          {/* 提交按钮 */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full rounded-xl bg-gradient-to-r from-[var(--xhs-primary)] to-[var(--xhs-secondary)] px-6 py-4 text-base font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+          >
+            {loading ? (
+              <span className="flex items-center justify-center gap-2">
+                <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24">
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                    fill="none"
+                  />
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                  />
+                </svg>
+                生成中...
+              </span>
+            ) : (
+              '生成我的内容日历'
+            )}
+          </button>
+        </form>
       </section>
     </main>
   )
