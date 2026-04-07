@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm init:*)",
+      "Bash(pnpm create:*)",
+      "Bash(npx @tanstack/cli@latest init --template start --name web --package-manager pnpm)",
+      "Bash(rm -rf /Users/xxx/Code/creflow/apps/web)",
+      "Bash(npx @tanstack/cli@latest create --name web --template start --package-manager pnpm)",
+      "Bash(npx @tanstack/cli@latest create --help)",
+      "Bash(npx:*)",
+      "Bash(pnpm install:*)",
+      "Bash(find /Users/xxx/Code/creflow -maxdepth 3 -not -path */node_modules/*)",
+      "Bash(find /Users/xxx/Code/creflow -type f -name *.md -o -name .cursorrules -o -name CLAUDE.md)",
+      "Bash(git init:*)",
+      "Bash(git remote:*)",
+      "Bash(git add:*)"
+    ]
+  }
+}
