@@ -1,30 +1,38 @@
 import { Link } from '@tanstack/react-router'
-import type { ContentPlanItem } from '#/lib/storage'
+import type { ContentPlanItem } from '@/lib/storage'
+import { Card, CardContent } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { cn } from '@/lib/utils'
+import { ChevronRight } from 'lucide-react'
 
-const TYPE_COLORS: Record<string, { bg: string; text: string; border: string; gradient: string }> = {
+const TYPE_COLORS: Record<string, { bg: string; text: string; border: string; gradient: string; badge: string }> = {
   '共鸣': {
-    bg: 'bg-[rgba(255,36,66,0.08)]',
-    text: 'text-[var(--xhs-primary)]',
-    border: 'border-[var(--xhs-primary)]',
-    gradient: 'from-[var(--xhs-primary)] to-[var(--xhs-secondary)]',
+    bg: 'bg-rose-50',
+    text: 'text-rose-600',
+    border: 'border-rose-200',
+    gradient: 'from-rose-400 to-rose-500',
+    badge: 'bg-rose-100 text-rose-700 hover:bg-rose-100',
   },
   '记录': {
-    bg: 'bg-gray-100',
+    bg: 'bg-gray-50',
     text: 'text-gray-600',
-    border: 'border-gray-400',
+    border: 'border-gray-200',
     gradient: 'from-gray-400 to-gray-500',
+    badge: 'bg-gray-100 text-gray-700 hover:bg-gray-100',
   },
   '干货': {
     bg: 'bg-blue-50',
     text: 'text-blue-600',
-    border: 'border-blue-400',
+    border: 'border-blue-200',
     gradient: 'from-blue-400 to-blue-500',
+    badge: 'bg-blue-100 text-blue-700 hover:bg-blue-100',
   },
   '种草': {
     bg: 'bg-green-50',
     text: 'text-green-600',
-    border: 'border-green-400',
+    border: 'border-green-200',
     gradient: 'from-green-400 to-green-500',
+    badge: 'bg-green-100 text-green-700 hover:bg-green-100',
   },
 }
 
@@ -44,15 +52,17 @@ export function TimelineCalendar({ contentPlan, niche }: TimelineCalendarProps) 
   return (
     <div className="space-y-6">
       {/* Progress Header */}
-      <div className="flex items-center justify-between rounded-xl bg-gradient-to-r from-gray-50 to-gray-100 p-4">
-        <div>
-          <h3 className="font-semibold text-[var(--sea-ink)]">{niche || '内容日历'}</h3>
-          <p className="text-sm text-[var(--sea-ink-soft)]">共 {contentPlan.length} 天内容计划</p>
-        </div>
-        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white text-2xl shadow-sm">
-          📅
-        </div>
-      </div>
+      <Card className="border-none bg-gradient-to-r from-muted/50 to-muted">
+        <CardContent className="flex items-center justify-between p-4">
+          <div>
+            <h3 className="font-semibold text-foreground">{niche || '内容日历'}</h3>
+            <p className="text-sm text-muted-foreground">共 {contentPlan.length} 天内容计划</p>
+          </div>
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-background text-2xl shadow-sm">
+            📅
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Vertical Timeline */}
       <div className="relative">
@@ -72,75 +82,68 @@ export function TimelineCalendar({ contentPlan, niche }: TimelineCalendarProps) 
               <div className="relative flex flex-col items-center">
                 {/* Connection Line */}
                 {!isLast && (
-                  <div className="absolute top-10 bottom-0 left-1/2 w-0.5 -translate-x-1/2 bg-gradient-to-b from-gray-300 to-gray-200" />
+                  <div className="absolute top-10 bottom-0 left-1/2 w-0.5 -translate-x-1/2 bg-gradient-to-b from-border to-muted" />
                 )}
 
                 {/* Day Node */}
                 <div
-                  className={`relative z-10 flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br ${colors.gradient} text-sm font-bold text-white shadow-md transition-transform group-hover:scale-110`}
+                  className={cn(
+                    "relative z-10 flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br text-sm font-bold text-white shadow-md transition-transform group-hover:scale-110",
+                    colors.gradient
+                  )}
                 >
                   {item.day}
                 </div>
               </div>
 
               {/* Content Card */}
-              <div className={`mb-6 flex-1 rounded-xl border ${colors.border} ${colors.bg} p-4 transition-all group-hover:shadow-md`}>
-                {/* Card Header */}
-                <div className="mb-3 flex items-center justify-between">
-                  <div className={`inline-flex items-center gap-1.5 rounded-full bg-white/80 px-3 py-1 ${colors.text}`}>
-                    <span>{icon}</span>
-                    <span className="text-sm font-medium">{item.type}</span>
+              <Card className={cn(
+                "mb-6 flex-1 border transition-all group-hover:shadow-md",
+                colors.border,
+                colors.bg
+              )}>
+                <CardContent className="p-4">
+                  {/* Card Header */}
+                  <div className="mb-3 flex items-center justify-between">
+                    <Badge variant="secondary" className={cn(colors.badge)}>
+                      <span className="mr-1">{icon}</span>
+                      {item.type}
+                    </Badge>
+                    <span className="text-xs text-muted-foreground">
+                      第 {item.day} 天
+                    </span>
                   </div>
-                  <span className="text-xs text-[var(--sea-ink-soft)]">
-                    第 {item.day} 天
-                  </span>
-                </div>
 
-                {/* Topic */}
-                <h4 className="mb-2 text-base font-semibold text-[var(--sea-ink)]">
-                  {item.topic}
-                </h4>
+                  {/* Topic */}
+                  <h4 className="mb-2 text-base font-semibold text-foreground">
+                    {item.topic}
+                  </h4>
 
-                {/* Intent */}
-                <p className="mb-3 text-sm leading-relaxed text-[var(--sea-ink-soft)]">
-                  {item.intent}
-                </p>
+                  {/* Intent */}
+                  <p className="mb-3 text-sm leading-relaxed text-muted-foreground">
+                    {item.intent}
+                  </p>
 
-                {/* Tags */}
-                {item.tags && item.tags.length > 0 && (
-                  <div className="mb-3 flex flex-wrap gap-2">
-                    {item.tags.map((tag) => (
-                      <span
-                        key={tag}
-                        className="rounded-full bg-white/60 px-2 py-0.5 text-xs text-[var(--sea-ink-soft)]"
-                      >
-                        #{tag}
-                      </span>
-                    ))}
+                  {/* Action Hint */}
+                  <div className="flex items-center gap-1 text-sm text-primary opacity-0 transition-opacity group-hover:opacity-100">
+                    <span>查看详情</span>
+                    <ChevronRight className="h-4 w-4" />
                   </div>
-                )}
-
-                {/* Action Hint */}
-                <div className="flex items-center gap-1 text-sm text-[var(--xhs-primary)] opacity-0 transition-opacity group-hover:opacity-100">
-                  <span>查看详情</span>
-                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </div>
-              </div>
+                </CardContent>
+              </Card>
             </Link>
           )
         })}
       </div>
 
       {/* Legend */}
-      <div className="grid grid-cols-2 gap-3 rounded-xl bg-gray-50 p-4 sm:grid-cols-4">
+      <div className="grid grid-cols-2 gap-3 rounded-xl bg-muted p-4 sm:grid-cols-4">
         {Object.entries(TYPE_COLORS).map(([type, colors]) => (
           <div key={type} className="flex items-center gap-2">
-            <div className={`h-8 w-8 rounded-full ${colors.bg} flex items-center justify-center text-sm`}>
+            <div className={cn("h-8 w-8 rounded-full flex items-center justify-center text-sm", colors.bg)}>
               {TYPE_ICONS[type]}
             </div>
-            <span className="text-sm text-[var(--sea-ink-soft)]">{type}</span>
+            <span className="text-sm text-muted-foreground">{type}</span>
           </div>
         ))}
       </div>

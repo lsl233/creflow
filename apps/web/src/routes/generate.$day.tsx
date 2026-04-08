@@ -1,17 +1,23 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
-import { api } from '#/lib/api'
-import { storage, type ContentPlanItem, type GeneratedPost } from '#/lib/storage'
+import { api } from '@/lib/api'
+import { storage, type ContentPlanItem, type GeneratedPost } from '@/lib/storage'
+import { Button } from '@/components/ui/button'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Badge } from '@/components/ui/badge'
+import { Skeleton } from '@/components/ui/skeleton'
+import { cn } from '@/lib/utils'
+import { ChevronLeft, Copy, Check } from 'lucide-react'
 
 export const Route = createFileRoute('/generate/$day')({
   component: GeneratePage,
 })
 
-const TYPE_COLORS: Record<string, string> = {
-  '共鸣': 'tag-gongming',
-  '记录': 'tag-jilu',
-  '干货': 'tag-gganhuo',
-  '种草': 'tag-zhongcao',
+const TYPE_VARIANTS: Record<string, { variant: 'default' | 'secondary' | 'destructive' | 'outline'; className: string }> = {
+  '共鸣': { variant: 'default' as const, className: 'bg-rose-100 text-rose-700 hover:bg-rose-100' },
+  '记录': { variant: 'secondary' as const, className: 'bg-gray-100 text-gray-700 hover:bg-gray-100' },
+  '干货': { variant: 'secondary' as const, className: 'bg-blue-50 text-blue-600 hover:bg-blue-50' },
+  '种草': { variant: 'secondary' as const, className: 'bg-green-50 text-green-600 hover:bg-green-50' },
 }
 
 function GeneratePage() {
@@ -92,12 +98,12 @@ function GeneratePage() {
   if (loading) {
     return (
       <main className="page-wrap px-4 pb-8 pt-10">
-        <div className="island-shell rounded-2xl p-8">
-          <div className="flex flex-col items-center justify-center py-12">
-            <div className="mb-4 h-12 w-12 animate-pulse rounded-full bg-[rgba(255,36,66,0.1)]" />
-            <p className="text-sm text-[var(--sea-ink-soft)]">正在生成内容...</p>
-          </div>
-        </div>
+        <Card className="border-none shadow-lg">
+          <CardContent className="flex flex-col items-center justify-center py-12">
+            <Skeleton className="mb-4 h-12 w-12 rounded-full" />
+            <p className="text-sm text-muted-foreground">正在生成内容...</p>
+          </CardContent>
+        </Card>
       </main>
     )
   }
@@ -105,17 +111,18 @@ function GeneratePage() {
   if (error) {
     return (
       <main className="page-wrap px-4 pb-8 pt-10">
-        <div className="island-shell rounded-2xl p-8 text-center">
-          <div className="mb-4 text-4xl">😢</div>
-          <h2 className="mb-2 text-xl font-bold text-[var(--sea-ink)]">生成失败</h2>
-          <p className="mb-6 text-sm text-[var(--sea-ink-soft)]">{error}</p>
-          <button
-            onClick={() => planItem && generatePost(planItem, storage.getContentPlanParams()?.niche || '')}
-            className="inline-block rounded-xl bg-gradient-to-r from-[var(--xhs-primary)] to-[var(--xhs-secondary)] px-6 py-3 text-sm font-semibold text-white transition hover:opacity-90"
-          >
-            重试
-          </button>
-        </div>
+        <Card className="border-none shadow-lg">
+          <CardContent className="p-8 text-center">
+            <div className="mb-4 text-4xl">😢</div>
+            <h2 className="mb-2 text-xl font-bold text-foreground">生成失败</h2>
+            <p className="mb-6 text-sm text-muted-foreground">{error}</p>
+            <Button
+              onClick={() => planItem && generatePost(planItem, storage.getContentPlanParams()?.niche || '')}
+            >
+              重试
+            </Button>
+          </CardContent>
+        </Card>
       </main>
     )
   }
@@ -124,25 +131,24 @@ function GeneratePage() {
     return null
   }
 
+  const typeStyle = TYPE_VARIANTS[planItem.type] || TYPE_VARIANTS['记录']
+
   return (
     <main className="page-wrap px-4 pb-8 pt-6">
       {/* 返回按钮 */}
-      <Link
-        to="/calendar"
-        className="mb-4 inline-flex items-center gap-2 text-sm text-[var(--sea-ink-soft)] transition hover:text-[var(--xhs-primary)]"
-      >
-        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-        </svg>
-        返回日历
-      </Link>
+      <Button variant="ghost" className="mb-4 -ml-2" asChild>
+        <Link to="/calendar" className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary">
+          <ChevronLeft className="h-4 w-4" />
+          返回日历
+        </Link>
+      </Button>
 
       {/* 选题信息 */}
       <div className="mb-6 flex items-center gap-3">
-        <span className={`rounded-full px-3 py-1 text-sm font-medium ${TYPE_COLORS[planItem.type]}`}>
+        <Badge variant={typeStyle.variant} className={cn("px-3 py-1", typeStyle.className)}>
           Day{planItem.day} · {planItem.type}
-        </span>
-        <h1 className="text-lg font-medium text-[var(--sea-ink)]">
+        </Badge>
+        <h1 className="text-lg font-medium text-foreground">
           {planItem.topic}
         </h1>
       </div>
@@ -150,143 +156,147 @@ function GeneratePage() {
       {/* 生成的内容 */}
       <div className="space-y-4">
         {/* 标题 */}
-        <section className="island-shell rounded-2xl p-5">
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-sm font-medium text-[var(--sea-ink-soft)]">标题</h2>
-            <button
-              onClick={() => copyToClipboard(generatedPost.title, 'title')}
-              className="flex items-center gap-1 text-sm text-[var(--xhs-primary)] transition hover:opacity-70"
-            >
-              {copied === 'title' ? (
-                <>
-                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  已复制
-                </>
-              ) : (
-                <>
-                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                  </svg>
-                  复制
-                </>
-              )}
-            </button>
-          </div>
-          <p className="text-xl font-bold text-[var(--sea-ink)]">
-            {generatedPost.title}
-          </p>
-        </section>
+        <Card className="border-none shadow-sm">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm font-medium text-muted-foreground">标题</CardTitle>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => copyToClipboard(generatedPost.title, 'title')}
+                className="text-primary hover:text-primary/80"
+              >
+                {copied === 'title' ? (
+                  <>
+                    <Check className="mr-1 h-4 w-4" />
+                    已复制
+                  </>
+                ) : (
+                  <>
+                    <Copy className="mr-1 h-4 w-4" />
+                    复制
+                  </>
+                )}
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <p className="text-xl font-bold text-foreground">
+              {generatedPost.title}
+            </p>
+          </CardContent>
+        </Card>
 
         {/* 正文 */}
-        <section className="island-shell rounded-2xl p-5">
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-sm font-medium text-[var(--sea-ink-soft)]">正文</h2>
-            <button
-              onClick={() => copyToClipboard(generatedPost.content, 'content')}
-              className="flex items-center gap-1 text-sm text-[var(--xhs-primary)] transition hover:opacity-70"
-            >
-              {copied === 'content' ? (
-                <>
-                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  已复制
-                </>
-              ) : (
-                <>
-                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                  </svg>
-                  复制
-                </>
-              )}
-            </button>
-          </div>
-          <div className="whitespace-pre-wrap text-[var(--sea-ink)] leading-relaxed">
-            {generatedPost.content}
-          </div>
-        </section>
+        <Card className="border-none shadow-sm">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm font-medium text-muted-foreground">正文</CardTitle>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => copyToClipboard(generatedPost.content, 'content')}
+                className="text-primary hover:text-primary/80"
+              >
+                {copied === 'content' ? (
+                  <>
+                    <Check className="mr-1 h-4 w-4" />
+                    已复制
+                  </>
+                ) : (
+                  <>
+                    <Copy className="mr-1 h-4 w-4" />
+                    复制
+                  </>
+                )}
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="whitespace-pre-wrap text-foreground leading-relaxed">
+              {generatedPost.content}
+            </div>
+          </CardContent>
+        </Card>
 
         {/* 标签 */}
-        <section className="island-shell rounded-2xl p-5">
-          <div className="mb-3 flex items-center justify-between">
-            <h2 className="text-sm font-medium text-[var(--sea-ink-soft)]">标签</h2>
-            <button
-              onClick={() => copyToClipboard(generatedPost.tags.map(t => `#${t}`).join(' '), 'tags')}
-              className="flex items-center gap-1 text-sm text-[var(--xhs-primary)] transition hover:opacity-70"
-            >
-              {copied === 'tags' ? (
-                <>
-                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  已复制
-                </>
-              ) : (
-                <>
-                  <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                  </svg>
-                  复制
-                </>
-              )}
-            </button>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            {generatedPost.tags.map((tag, index) => (
-              <span
-                key={index}
-                className="rounded-full bg-[rgba(255,36,66,0.08)] px-3 py-1 text-sm text-[var(--xhs-primary)]"
+        <Card className="border-none shadow-sm">
+          <CardHeader className="pb-3">
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm font-medium text-muted-foreground">标签</CardTitle>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => copyToClipboard(generatedPost.tags.map(t => `#${t}`).join(' '), 'tags')}
+                className="text-primary hover:text-primary/80"
               >
-                #{tag}
-              </span>
-            ))}
-          </div>
-        </section>
+                {copied === 'tags' ? (
+                  <>
+                    <Check className="mr-1 h-4 w-4" />
+                    已复制
+                  </>
+                ) : (
+                  <>
+                    <Copy className="mr-1 h-4 w-4" />
+                    复制
+                  </>
+                )}
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-wrap gap-2">
+              {generatedPost.tags.map((tag, index) => (
+                <Badge key={index} variant="secondary" className="bg-rose-50 text-rose-600 hover:bg-rose-50">
+                  #{tag}
+                </Badge>
+              ))}
+            </div>
+          </CardContent>
+        </Card>
 
         {/* 图片建议 */}
         {generatedPost.imageSuggestions && generatedPost.imageSuggestions.length > 0 && (
-          <section className="island-shell rounded-2xl p-5">
-            <h2 className="mb-3 text-sm font-medium text-[var(--sea-ink-soft)]">图片建议</h2>
-            <ul className="space-y-2">
-              {generatedPost.imageSuggestions.map((suggestion, index) => (
-                <li key={index} className="flex items-start gap-2 text-sm text-[var(--sea-ink)]">
-                  <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-[rgba(255,36,66,0.1)] text-xs text-[var(--xhs-primary)]">
-                    {index + 1}
-                  </span>
-                  {suggestion}
-                </li>
-              ))}
-            </ul>
-          </section>
+          <Card className="border-none shadow-sm">
+            <CardHeader>
+              <CardTitle className="text-sm font-medium text-muted-foreground">图片建议</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-2">
+                {generatedPost.imageSuggestions.map((suggestion, index) => (
+                  <li key={index} className="flex items-start gap-2 text-sm text-foreground">
+                    <span className="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-rose-100 text-xs text-rose-600">
+                      {index + 1}
+                    </span>
+                    {suggestion}
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
         )}
 
         {/* 复制全部按钮 */}
-        <button
+        <Button
           onClick={() => {
             const fullContent = `${generatedPost.title}\n\n${generatedPost.content}\n\n${generatedPost.tags.map(t => `#${t}`).join(' ')}`
             copyToClipboard(fullContent, 'all')
           }}
-          className="flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[var(--xhs-primary)] to-[var(--xhs-secondary)] px-6 py-4 text-base font-semibold text-white transition hover:opacity-90"
+          className="w-full h-14 text-base font-semibold"
+          size="lg"
         >
           {copied === 'all' ? (
             <>
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
+              <Check className="mr-2 h-5 w-5" />
               已复制全部内容
             </>
           ) : (
             <>
-              <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-              </svg>
+              <Copy className="mr-2 h-5 w-5" />
               复制全部内容
             </>
           )}
-        </button>
+        </Button>
       </div>
     </main>
   )

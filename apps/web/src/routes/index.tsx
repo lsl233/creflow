@@ -1,8 +1,11 @@
 import { useState } from 'react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { api } from '#/lib/api'
-import { storage } from '#/lib/storage'
-import { FormFieldWithExplanation } from '#/components/FormFieldWithExplanation'
+import { api } from '@/lib/api'
+import { storage } from '@/lib/storage'
+import { FormFieldWithExplanation } from '@/components/FormFieldWithExplanation'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Card, CardContent } from '@/components/ui/card'
 
 export const Route = createFileRoute('/')({
   component: HomePage,
@@ -68,152 +71,143 @@ function HomePage() {
 
   return (
     <main className="page-wrap px-4 pb-8 pt-10">
-      <section className="island-shell rise-in relative overflow-hidden rounded-2xl px-6 py-8 sm:px-8 sm:py-10">
-        <div className="pointer-events-none absolute -left-16 -top-16 h-48 w-48 rounded-full bg-gradient-to-br from-[rgba(255,36,66,0.15)] to-transparent" />
-        <div className="pointer-events-none absolute -bottom-16 -right-16 h-48 w-48 rounded-full bg-gradient-to-tl from-[rgba(251,114,153,0.12)] to-transparent" />
+      <Card className="rise-in relative overflow-hidden border-none shadow-lg">
+        <div className="pointer-events-none absolute -left-16 -top-16 h-48 w-48 rounded-full bg-gradient-to-br from-rose-100 to-transparent" />
+        <div className="pointer-events-none absolute -bottom-16 -right-16 h-48 w-48 rounded-full bg-gradient-to-tl from-rose-50 to-transparent" />
 
-        <h1 className="mb-2 text-2xl font-bold text-[var(--sea-ink)] sm:text-3xl">
-          告诉我你想做什么
-        </h1>
-        <p className="mb-6 text-base text-[var(--sea-ink-soft)]">
-          输入你的内容定位，我来帮你规划一周的内容
-        </p>
+        <CardContent className="relative px-6 py-8 sm:px-8 sm:py-10">
+          <h1 className="mb-2 text-2xl font-bold text-foreground sm:text-3xl">
+            告诉我你想做什么
+          </h1>
+          <p className="mb-6 text-base text-muted-foreground">
+            输入你的内容定位，我来帮你规划一周的内容
+          </p>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          {/* 领域/定位 */}
-          <FormFieldWithExplanation
-            label="你的内容定位"
-            required
-            explanation={FIELD_EXPLANATIONS.niche}
-          >
-            <input
-              type="text"
-              value={niche}
-              onChange={(e) => setNiche(e.target.value)}
-              placeholder="例如：职场成长、美食探店、宝妈育儿..."
-              className="w-full rounded-xl border border-[var(--line)] bg-white px-4 py-3 text-base text-[var(--sea-ink)] placeholder:text-gray-400 focus:border-[var(--xhs-primary)] focus:outline-none focus:ring-2 focus:ring-[rgba(255,36,66,0.1)]"
-            />
-          </FormFieldWithExplanation>
-
-          {/* 目标 */}
-          <FormFieldWithExplanation
-            label="你的目标是什么？"
-            explanation={FIELD_EXPLANATIONS.goal}
-          >
-            <div className="flex gap-3">
-              <button
-                type="button"
-                onClick={() => setGoal('涨粉')}
-                className={`flex-1 rounded-xl border px-4 py-3 text-base font-medium transition ${
-                  goal === '涨粉'
-                    ? 'border-[var(--xhs-primary)] bg-[rgba(255,36,66,0.05)] text-[var(--xhs-primary)]'
-                    : 'border-[var(--line)] text-[var(--sea-ink-soft)] hover:border-[var(--xhs-primary)]'
-                }`}
-              >
-                涨粉
-              </button>
-              <button
-                type="button"
-                onClick={() => setGoal('变现')}
-                className={`flex-1 rounded-xl border px-4 py-3 text-base font-medium transition ${
-                  goal === '变现'
-                    ? 'border-[var(--xhs-primary)] bg-[rgba(255,36,66,0.05)] text-[var(--xhs-primary)]'
-                    : 'border-[var(--line)] text-[var(--sea-ink-soft)] hover:border-[var(--xhs-primary)]'
-                }`}
-              >
-                变现
-              </button>
-            </div>
-          </FormFieldWithExplanation>
-
-          {/* 人设 */}
-          <FormFieldWithExplanation
-            label="你想呈现什么样的人设？"
-            explanation={FIELD_EXPLANATIONS.persona}
-          >
-            <div className="flex gap-3">
-              <button
-                type="button"
-                onClick={() => setPersona('真实')}
-                className={`flex-1 rounded-xl border px-4 py-3 text-base font-medium transition ${
-                  persona === '真实'
-                    ? 'border-[var(--xhs-primary)] bg-[rgba(255,36,66,0.05)] text-[var(--xhs-primary)]'
-                    : 'border-[var(--line)] text-[var(--sea-ink-soft)] hover:border-[var(--xhs-primary)]'
-                }`}
-              >
-                真实
-              </button>
-              <button
-                type="button"
-                onClick={() => setPersona('专业')}
-                className={`flex-1 rounded-xl border px-4 py-3 text-base font-medium transition ${
-                  persona === '专业'
-                    ? 'border-[var(--xhs-primary)] bg-[rgba(255,36,66,0.05)] text-[var(--xhs-primary)]'
-                    : 'border-[var(--line)] text-[var(--sea-ink-soft)] hover:border-[var(--xhs-primary)]'
-                }`}
-              >
-                专业
-              </button>
-            </div>
-          </FormFieldWithExplanation>
-
-          {/* 发布频率 */}
-          <FormFieldWithExplanation
-            label="每周发布几次？"
-            explanation={FIELD_EXPLANATIONS.frequency}
-          >
-            <div className="flex items-center gap-4">
-              <input
-                type="number"
-                min={1}
-                max={7}
-                value={frequency}
-                onChange={(e) => setFrequency(Math.max(1, Math.min(7, parseInt(e.target.value) || 1)))}
-                className="w-20 rounded-xl border border-[var(--line)] bg-white px-4 py-3 text-base text-[var(--sea-ink)] focus:border-[var(--xhs-primary)] focus:outline-none focus:ring-2 focus:ring-[rgba(255,36,66,0.1)]"
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {/* 领域/定位 */}
+            <FormFieldWithExplanation
+              label="你的内容定位"
+              required
+              explanation={FIELD_EXPLANATIONS.niche}
+            >
+              <Input
+                type="text"
+                value={niche}
+                onChange={(e) => setNiche(e.target.value)}
+                placeholder="例如：职场成长、美食探店、宝妈育儿..."
+                className="h-12"
               />
-              <span className="text-base text-[var(--sea-ink-soft)]">次/周</span>
-            </div>
-          </FormFieldWithExplanation>
+            </FormFieldWithExplanation>
 
-          {/* 错误提示 */}
-          {error && (
-            <p className="rounded-lg bg-red-50 px-4 py-3 text-base text-red-500">
-              {error}
-            </p>
-          )}
+            {/* 目标 */}
+            <FormFieldWithExplanation
+              label="你的目标是什么？"
+              explanation={FIELD_EXPLANATIONS.goal}
+            >
+              <div className="flex gap-3">
+                <Button
+                  type="button"
+                  variant={goal === '涨粉' ? 'default' : 'outline'}
+                  onClick={() => setGoal('涨粉')}
+                  className="flex-1 h-12"
+                >
+                  涨粉
+                </Button>
+                <Button
+                  type="button"
+                  variant={goal === '变现' ? 'default' : 'outline'}
+                  onClick={() => setGoal('变现')}
+                  className="flex-1 h-12"
+                >
+                  变现
+                </Button>
+              </div>
+            </FormFieldWithExplanation>
 
-          {/* 提交按钮 */}
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full rounded-xl bg-gradient-to-r from-[var(--xhs-primary)] to-[var(--xhs-secondary)] px-6 py-4 text-base font-semibold text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {loading ? (
-              <span className="flex items-center justify-center gap-2">
-                <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24">
-                  <circle
-                    className="opacity-25"
-                    cx="12"
-                    cy="12"
-                    r="10"
-                    stroke="currentColor"
-                    strokeWidth="4"
-                    fill="none"
-                  />
-                  <path
-                    className="opacity-75"
-                    fill="currentColor"
-                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                  />
-                </svg>
-                生成中...
-              </span>
-            ) : (
-              '生成我的内容日历'
+            {/* 人设 */}
+            <FormFieldWithExplanation
+              label="你想呈现什么样的人设？"
+              explanation={FIELD_EXPLANATIONS.persona}
+            >
+              <div className="flex gap-3">
+                <Button
+                  type="button"
+                  variant={persona === '真实' ? 'default' : 'outline'}
+                  onClick={() => setPersona('真实')}
+                  className="flex-1 h-12"
+                >
+                  真实
+                </Button>
+                <Button
+                  type="button"
+                  variant={persona === '专业' ? 'default' : 'outline'}
+                  onClick={() => setPersona('专业')}
+                  className="flex-1 h-12"
+                >
+                  专业
+                </Button>
+              </div>
+            </FormFieldWithExplanation>
+
+            {/* 发布频率 */}
+            <FormFieldWithExplanation
+              label="每周发布几次？"
+              explanation={FIELD_EXPLANATIONS.frequency}
+            >
+              <div className="flex items-center gap-4">
+                <Input
+                  type="number"
+                  min={1}
+                  max={7}
+                  value={frequency}
+                  onChange={(e) => setFrequency(Math.max(1, Math.min(7, parseInt(e.target.value) || 1)))}
+                  className="w-24 h-12"
+                />
+                <span className="text-base text-muted-foreground">次/周</span>
+              </div>
+            </FormFieldWithExplanation>
+
+            {/* 错误提示 */}
+            {error && (
+              <div className="rounded-lg bg-destructive/10 px-4 py-3 text-base text-destructive">
+                {error}
+              </div>
             )}
-          </button>
-        </form>
-      </section>
+
+            {/* 提交按钮 */}
+            <Button
+              type="submit"
+              disabled={loading}
+              className="w-full h-14 text-base font-semibold"
+              size="lg"
+            >
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24">
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                      fill="none"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                    />
+                  </svg>
+                  生成中...
+                </span>
+              ) : (
+                '生成我的内容日历'
+              )}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
     </main>
   )
 }
