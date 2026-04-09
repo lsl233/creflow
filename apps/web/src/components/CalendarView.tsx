@@ -94,7 +94,7 @@ export function CalendarView() {
         toast.error('生成日历失败，请重试')
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to generate content')
+      setError(err instanceof Error ? err.message : '内容生成失败')
       toast.error('生成日历失败，请重试')
     } finally {
       setLoading(false)

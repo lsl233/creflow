@@ -28,21 +28,21 @@ function LandingPage() {
         <div className="max-w-4xl mx-auto text-center space-y-8">
           <div className="inline-flex items-center rounded-full border border-[#ff2442]/30 bg-[#ff2442]/5 px-3 py-1 text-sm font-medium text-[#ff2442]">
             <Sparkles className="mr-2 h-4 w-4" />
-            AI-Powered Xiaohongshu Growth
+            AI 驱动的小红书增长
           </div>
 
           <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-neutral-900">
-            10x Your <span className="text-[#ff2442]">Xiaohongshu</span> Content
+            让你的<span className="text-[#ff2442]">小红书</span>内容 10 倍出彩
           </h1>
 
           <p className="text-xl text-neutral-500 max-w-2xl mx-auto leading-relaxed">
-            Stop staring at a blank page. Generate a full 7-day content calendar and viral-ready posts tailored exactly to your niche in seconds.
+            不再对着空白页面发呆。几秒钟内生成完整的 7 天内容日历和爆款笔记，精准匹配你的领域定位。
           </p>
 
           <form onSubmit={handleStart} className="max-w-xl mx-auto mt-10 relative flex items-center shadow-2xl shadow-[#ff2442]/10 rounded-full bg-white p-2 border border-neutral-200">
             <Input
               type="text"
-              placeholder="What is your account about? (e.g. Minimalist home decor)"
+              placeholder="你的账号定位是什么？（如：极简家居）"
               className="border-0 shadow-none focus-visible:ring-0 text-base px-6 h-12"
               value={niche}
               onChange={(e) => setNiche(e.target.value)}
@@ -54,11 +54,11 @@ function LandingPage() {
               className="rounded-full bg-[#ff2442] hover:bg-[#e01f39] text-white px-8 h-12"
               disabled={!niche.trim()}
             >
-              Start Creating
+              开始创作
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </form>
-          <p className="text-sm text-neutral-400 mt-4">No credit card required. Start generating immediately.</p>
+          <p className="text-sm text-neutral-400 mt-4">无需信用卡，立即开始生成</p>
         </div>
       </section>
 
@@ -66,7 +66,7 @@ function LandingPage() {
       <section className="py-24 bg-neutral-50 px-4">
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-neutral-900">Everything you need to go viral</h2>
+            <h2 className="text-3xl font-bold text-neutral-900">助你打造爆款的一切</h2>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
@@ -74,9 +74,9 @@ function LandingPage() {
               <div className="w-12 h-12 bg-[#ff2442]/10 rounded-xl flex items-center justify-center mb-6">
                 <CalendarDays className="h-6 w-6 text-[#ff2442]" />
               </div>
-              <h3 className="text-xl font-bold mb-3">7-Day Content Calendar</h3>
+              <h3 className="text-xl font-bold mb-3">7 天内容日历</h3>
               <p className="text-neutral-500 leading-relaxed">
-                Never run out of ideas. Get a structured week of engaging topics and descriptions tailored to your specific audience.
+                灵感永不枯竭。获取一整周结构化的话题安排，精准匹配你的目标受众。
               </p>
             </div>
 
@@ -84,9 +84,9 @@ function LandingPage() {
               <div className="w-12 h-12 bg-[#ff2442]/10 rounded-xl flex items-center justify-center mb-6">
                 <PenTool className="h-6 w-6 text-[#ff2442]" />
               </div>
-              <h3 className="text-xl font-bold mb-3">Viral Copywriting</h3>
+              <h3 className="text-xl font-bold mb-3">爆款文案</h3>
               <p className="text-neutral-500 leading-relaxed">
-                Generate click-worthy titles, emoji-rich formatting, and conversational body text that perfectly matches the Xiaohongshu vibe.
+                生成吸睛标题、丰富表情符号、口语化正文，完美契合小红书风格。
               </p>
             </div>
 
@@ -94,9 +94,9 @@ function LandingPage() {
               <div className="w-12 h-12 bg-[#ff2442]/10 rounded-xl flex items-center justify-center mb-6">
                 <TrendingUp className="h-6 w-6 text-[#ff2442]" />
               </div>
-              <h3 className="text-xl font-bold mb-3">Visual Direction</h3>
+              <h3 className="text-xl font-bold mb-3">视觉指导</h3>
               <p className="text-neutral-500 leading-relaxed">
-                Get specific suggestions for your image carousel and the exact hashtags you need to maximize your reach and engagement.
+                获得图片排版建议和精准话题标签，最大化你的曝光和互动。
               </p>
             </div>
           </div>

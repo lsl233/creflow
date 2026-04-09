@@ -13,11 +13,11 @@
 
 ## 任务列表
 
-- [ ] Task-1: 首页 (index.tsx) 文案中文化
-- [ ] Task-2: 设置页 (setup.tsx) 文案中文化
-- [ ] Task-3: 日历页 (calendar.tsx) 文案中文化
-- [ ] Task-4: 日历视图组件 (CalendarView.tsx) 文案中文化
-- [ ] Task-5: 内容生成页 (generate.$day.tsx) 文案检查与补充
+- [x] Task-1: 首页 (index.tsx) 文案中文化
+- [x] Task-2: 设置页 (setup.tsx) 文案中文化
+- [x] Task-3: 日历页 (calendar.tsx) 文案中文化
+- [x] Task-4: 日历视图组件 (CalendarView.tsx) 文案中文化
+- [x] Task-5: 内容生成页 (generate.$day.tsx) 文案检查与补充
 
 ---
 

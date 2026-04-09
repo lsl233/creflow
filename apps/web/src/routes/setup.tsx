@@ -43,28 +43,28 @@ function SetupForm() {
         <div className="md:col-span-2 space-y-6">
           <div>
             <div className="inline-flex items-center rounded-full border border-[#ff2442]/30 bg-[#ff2442]/10 px-3 py-1 text-sm font-medium text-[#ff2442] mb-4">
-              Step 2 of 3
+              第 2 步，共 3 步
             </div>
             <h1 className="text-3xl font-bold tracking-tight text-neutral-900 mb-2">
-              Flesh out your profile
+              完善你的账号信息
             </h1>
             <p className="text-neutral-500">
-              The more details you provide, the better our AI can tailor the content to your unique brand voice.
+              提供的信息越详细，AI 就能越好地为你量身定制符合品牌调性的内容。
             </p>
           </div>
 
           <div className="space-y-4">
             <div className="flex gap-3">
               <CheckCircle2 className="h-5 w-5 text-[#ff2442] shrink-0" />
-              <p className="text-sm text-neutral-600">Stand out with a highly specific niche.</p>
+              <p className="text-sm text-neutral-600">用精准的定位让你脱颖而出。</p>
             </div>
             <div className="flex gap-3">
               <CheckCircle2 className="h-5 w-5 text-[#ff2442] shrink-0" />
-              <p className="text-sm text-neutral-600">Speak directly to your target audience&apos;s pain points.</p>
+              <p className="text-sm text-neutral-600">直接击中目标受众的痛点。</p>
             </div>
             <div className="flex gap-3">
               <CheckCircle2 className="h-5 w-5 text-[#ff2442] shrink-0" />
-              <p className="text-sm text-neutral-600">Maintain a consistent tone that builds trust.</p>
+              <p className="text-sm text-neutral-600">保持一致的调性，建立信任感。</p>
             </div>
           </div>
         </div>
@@ -74,19 +74,19 @@ function SetupForm() {
           <Card className="border-0 shadow-xl shadow-neutral-200/50">
             <form onSubmit={handleSubmit}>
               <CardHeader className="pb-4">
-                <CardTitle className="text-xl">Account Details</CardTitle>
-                <CardDescription>Refine your Xiaohongshu persona.</CardDescription>
+                <CardTitle className="text-xl">账号详情</CardTitle>
+                <CardDescription>完善你的小红书人设。</CardDescription>
               </CardHeader>
               <CardContent className="space-y-5">
 
                 <div className="space-y-2">
                   <Label htmlFor="niche" className="flex items-center gap-2 font-semibold">
                     <Briefcase className="h-4 w-4 text-neutral-500" />
-                    Positioning / Niche <span className="text-red-500">*</span>
+                    定位 / 领域 <span className="text-red-500">*</span>
                   </Label>
                   <Input
                     id="niche"
-                    placeholder="e.g., Minimalist home decor, Tech reviews"
+                    placeholder="如：极简家居、数码测评"
                     value={niche}
                     onChange={(e) => setNiche(e.target.value)}
                     className="bg-neutral-50/50 focus-visible:ring-[#ff2442]"
@@ -97,11 +97,11 @@ function SetupForm() {
                 <div className="space-y-2">
                   <Label htmlFor="audience" className="flex items-center gap-2 font-semibold">
                     <Target className="h-4 w-4 text-neutral-500" />
-                    Target Audience <span className="text-neutral-400 font-normal text-xs">(Optional)</span>
+                    目标受众 <span className="text-neutral-400 font-normal text-xs">（可选）</span>
                   </Label>
                   <Input
                     id="audience"
-                    placeholder="e.g., College students, New mothers"
+                    placeholder="如：大学生、新手妈妈"
                     value={audience}
                     onChange={(e) => setAudience(e.target.value)}
                     className="bg-neutral-50/50 focus-visible:ring-[#ff2442]"
@@ -111,11 +111,11 @@ function SetupForm() {
                 <div className="space-y-2">
                   <Label htmlFor="tone" className="flex items-center gap-2 font-semibold">
                     <Mic className="h-4 w-4 text-neutral-500" />
-                    Content Tone <span className="text-neutral-400 font-normal text-xs">(Optional)</span>
+                    内容风格 <span className="text-neutral-400 font-normal text-xs">（可选）</span>
                   </Label>
                   <Input
                     id="tone"
-                    placeholder="e.g., Humorous, Professional, Emotional"
+                    placeholder="如：幽默、专业、温情"
                     value={tone}
                     onChange={(e) => setTone(e.target.value)}
                     className="bg-neutral-50/50 focus-visible:ring-[#ff2442]"
@@ -131,7 +131,7 @@ function SetupForm() {
                   disabled={!niche.trim()}
                 >
                   <Sparkles className="mr-2 h-4 w-4" />
-                  Generate Content Calendar
+                  生成内容日历
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Button>
               </CardFooter>
