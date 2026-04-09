@@ -77,6 +77,11 @@ export const storage = {
     }
   },
 
+  // 清除特定日期的生成帖子
+  clearGeneratedPost(day: number) {
+    localStorage.removeItem(`${STORAGE_KEYS.GENERATED_POST}_${day}`)
+  },
+
   // 清除所有数据
   clear() {
     Object.values(STORAGE_KEYS).forEach(key => {
