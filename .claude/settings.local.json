@@ -26,7 +26,17 @@
       "Bash(yes \"\")",
       "Bash(curl -s https://raw.githubusercontent.com/shadcn-ui/ui/main/apps/www/public/r/styles/new-york/button.json)",
       "Bash(pnpm add:*)",
-      "Bash(xargs sed:*)"
+      "Bash(xargs sed:*)",
+      "Bash(curl -s -X POST http://localhost:3001/api/content-plan -H \"Content-Type: application/json\" -d '{\"\"\"\"niche\"\"\"\":\"\"\"\"美妆\"\"\"\",\"\"\"\"goal\"\"\"\":\"\"\"\"涨粉\"\"\"\",\"\"\"\"persona\"\"\"\":\"\"\"\"真实\"\"\"\"}')",
+      "Bash(pkill -f \"tsx watch\")",
+      "Bash(node -e \":*)",
+      "Bash(pkill -f 'tsx watch' 2)",
+      "Bash(/dev/null lsof:*)",
+      "Bash(xargs kill:*)",
+      "Bash(/dev/null echo:*)",
+      "Bash(pkill -f \"vite\")",
+      "WebFetch(domain:platform.minimaxi.com)",
+      "WebSearch"
     ]
   }
 }

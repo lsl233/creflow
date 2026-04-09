@@ -47,6 +47,75 @@ pnpm clean        # Remove dist/ and .output/
 - Packages: `apps/*` and `packages/*`
 - Package names use `@creflow/` prefix (e.g., `@creflow/backend`, `@creflow/web`)
 
+### Shared Packages
+
+#### `@creflow/config` - Configuration Management
+
+Centralized configuration management with Zod validation:
+
+```
+packages/config/
+├── src/schema.ts     # Zod schemas for server/client config
+├── src/server.ts     # Server-side config (contains secrets)
+└── src/index.ts      # Client-safe config
+```
+
+**Usage:**
+```typescript
+// Server-side code only
+import { getServerConfig } from '@creflow/config/server'
+const config = getServerConfig()
+// config.MINIMAX_API_KEY, config.MINIMAX_MODEL, etc.
+```
+
+Configuration is loaded from root `.env` file.
+
+#### `@creflow/ai` - AI Client Package
+
+Reusable AI functionality used by both backend and web:
+
+```
+packages/ai/
+├── src/client.ts          # MiniMaxClient wrapper
+├── src/types.ts           # TypeScript interfaces
+├── src/prompts/           # Prompt templates
+│   ├── content-plan.ts
+│   └── generate-post.ts
+└── src/index.ts           # High-level functions
+```
+
+**Usage:**
+```typescript
+// High-level functions (auto-loads config)
+import { generateContentPlan, generatePost } from '@creflow/ai'
+
+const { data, fallback } = await generateContentPlan({
+  niche: '美妆',
+  goal: '涨粉',
+  persona: '真实'
+})
+```
+
+**Architecture Flow:**
+```
+┌─────────────────────────────────────────────────────┐
+│                    packages/ai                       │
+│  ┌──────────────┐  ┌──────────────┐  ┌───────────┐ │
+│  │   client.ts  │  │  prompts/    │  │  types.ts │ │
+│  │ MiniMaxClient│  │  templates   │  │  shared   │ │
+│  └──────────────┘  └──────────────┘  └───────────┘ │
+└──────────────────────┬──────────────────────────────┘
+                       │
+        ┌──────────────┴──────────────┐
+        ▼                             ▼
+┌───────────────┐            ┌───────────────┐
+│   apps/web    │            │ apps/backend  │
+│               │            │               │
+│  server fn    │            │  API routes   │
+│  (direct)     │            │  (HTTP)       │
+└───────────────┘            └───────────────┘
+```
+
 ### Backend (`apps/backend`)
 
 - **Framework**: Hono with `@hono/node-server`
@@ -90,14 +159,29 @@ import { getRouter } from '#/router'
 
 #### Server Functions
 
-TanStack Start supports server functions via `createServerFn`:
+We use TanStack Start's `createServerFn` to call AI services directly from the frontend without going through the backend API:
 
 ```tsx
 import { createServerFn } from '@tanstack/react-start'
+import { generateContentPlan } from '@creflow/ai'
 
-const getData = createServerFn({ method: 'GET' })
-  .handler(async () => { /* server code */ })
+export const generateContentPlanFn = createServerFn({ method: 'POST' })
+  .handler(async ({ data }) => {
+    return generateContentPlan(data)
+  })
 ```
+
+Usage in components:
+```tsx
+import { generateContentPlanFn } from '@/functions/content'
+
+const result = await generateContentPlanFn({ data: { niche: '美妆' } })
+```
+
+This provides:
+- Direct AI access without HTTP overhead
+- Type-safe API calls
+- Automatic server-side rendering support
 
 #### Data Loading
 
@@ -117,8 +201,59 @@ Access loader data with `Route.useLoaderData()`.
 
 ## Development Notes
 
-- Both backend and web default to port 3000; change one when running simultaneously
-- Backend uses ES modules (`"type": "module"`)
-- Web app uses TypeScript strict mode with verbatim module syntax
-- Route files use `createFileRoute` from `@tanstack/react-router`
-- CSS imports use `?url` suffix: `import appCss from '../styles.css?url'`
+### Environment Configuration
+
+All environment variables are managed from the root `.env` file:
+
+```bash
+# AI Configuration
+MINIMAX_API_KEY=your-api-key-here
+MINIMAX_BASE_URL=https://api.minimaxi.chat/v1
+MINIMAX_MODEL=MiniMax-Text-01
+
+# Server Configuration
+PORT=3001
+NODE_ENV=development
+```
+
+The `packages/config` package automatically loads these values using `dotenv`.
+
+### Port Configuration
+
+- Backend: Port 3001 (configurable via `PORT` env var)
+- Web: Port 3000 (Vite dev server)
+- Run both simultaneously with `pnpm dev` from root
+
+### Build Order
+
+When building from scratch, build shared packages first:
+
+```bash
+# 1. Build shared packages
+cd packages/config && pnpm build
+cd packages/ai && pnpm build
+
+# 2. Build apps
+cd apps/backend && pnpm build
+cd apps/web && pnpm build
+```
+
+### TypeScript Import Paths
+
+- Backend: Standard relative imports (`./routes/content-plan.js`)
+- Web: Use `@/` prefix for src imports (`@/components/ui/button`)
+- Shared packages: Full package name (`@creflow/ai`, `@creflow/config/server`)
+
+### ES Modules
+
+- All packages use `"type": "module"`
+- Import paths must include `.js` extension for TypeScript output
+- `tsx` handles TypeScript execution in development
+
+### CSS Imports
+
+Use `?url` suffix for CSS imports in route files:
+
+```tsx
+import appCss from '../styles.css?url'
+```

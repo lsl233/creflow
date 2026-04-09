@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useEffect, useState } from 'react'
-import { api } from '@/lib/api'
+import { generatePostFn } from '@/functions/content'
 import { storage, type ContentPlanItem, type GeneratedPost } from '@/lib/storage'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -60,15 +60,17 @@ function GeneratePage() {
     setError('')
 
     try {
-      const response = await api.generatePost({
+      const response = await generatePostFn({ data: {
         topic: item.topic,
         type: item.type,
         niche,
-      })
+      }})
 
-      if (response.data) {
+      if (response.success && response.data) {
         setGeneratedPost(response.data)
         storage.saveGeneratedPost(item.day, response.data)
+      } else {
+        setError(response.error || '生成失败')
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : '生成失败')

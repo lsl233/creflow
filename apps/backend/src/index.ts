@@ -1,10 +1,15 @@
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
+import { getServerConfig } from '@creflow/config/server'
 import contentPlanRoute from './routes/content-plan.js'
 import generatePostRoute from './routes/generate-post.js'
 
 const app = new Hono()
+
+// 从配置中心获取配置
+const config = getServerConfig()
+const PORT = parseInt(config.PORT, 10) || 3001
 
 // CORS 中间件配置
 app.use('*', cors({
@@ -33,7 +38,7 @@ app.route('/api', api)
 
 serve({
   fetch: app.fetch,
-  port: 3001,
+  port: PORT,
 }, (info) => {
   console.log(`Server is running on http://localhost:${info.port}`)
 })

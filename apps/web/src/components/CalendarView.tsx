@@ -4,7 +4,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Loader2, CalendarIcon, Sparkles } from 'lucide-react'
 import { storage, type ContentPlanItem } from '@/lib/storage'
-import { api } from '@/lib/api'
+import { generateContentPlanFn } from '@/functions/content'
 import { TimelineCalendar } from '@/components/TimelineCalendar'
 
 export function CalendarView() {
@@ -40,16 +40,18 @@ export function CalendarView() {
     setError('')
 
     try {
-      const response = await api.generateContentPlan({
+      const response = await generateContentPlanFn({ data: {
         niche,
         goal: '涨粉',
         persona: '真实',
         frequency: 7,
-      })
+      }})
 
-      if (response.data) {
+      if (response.success && response.data) {
         storage.saveContentPlan(response.data, { niche, goal: '涨粉', persona: '真实', frequency: 7 })
         setContentPlan(response.data)
+      } else {
+        setError(response.error || '生成内容失败')
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to generate content')

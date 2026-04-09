@@ -8,6 +8,8 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
+    "@creflow/ai": "workspace:*",
+    "@creflow/config": "workspace:*",
     "@hono/node-server": "^1.19.13",
     "hono": "^4.12.12"
   },

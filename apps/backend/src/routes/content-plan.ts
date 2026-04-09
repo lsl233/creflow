@@ -4,7 +4,7 @@
  */
 
 import { Hono } from 'hono'
-import { minimax, MiniMaxError } from '../lib/minimax.js'
+import { generateContentPlan, MiniMaxError } from '@creflow/ai'
 import {
   logger,
   createErrorResponse,
@@ -65,52 +65,6 @@ function validateRequest(body: unknown): ContentPlanRequest | null {
   }
 }
 
-// 生成 Prompt
-function buildPrompt(niche: string, goal: string, persona: string): string {
-  return `你是小红书内容策划专家。请为以下定位的创作者生成7天内容日历。
-
-创作者定位: ${niche}
-变现目标: ${goal}
-人设风格: ${persona}
-
-请按以下格式生成7天的内容计划，每项必须是真实、有生活气息的话题：
-JSON数组格式:
-[
-  {"day": 1, "type": "共鸣/记录/干货/种草", "topic": "具体话题", "intent": "创作意图/角度"}
-]
-
-要求:
-1. type 必须是 "共鸣"、"记录"、"干货"、"种草" 之一
-2. topic 要具体、有吸引力、真实可信
-3. intent 要说明为什么这个话题值得创作
-4. 话题要多样化，覆盖不同类型
-5. 不要使用 emoji
-6. 只返回 JSON 数组，不要其他文字`
-}
-
-// 解析 AI 返回的 JSON
-function parseAIResponse(content: string): ContentPlanItem[] {
-  // 尝试提取 JSON 数组
-  const jsonMatch = content.match(/\[[\s\S]*\]/)
-  if (!jsonMatch) {
-    throw new Error('无法解析 AI 返回的内容')
-  }
-
-  const parsed = JSON.parse(jsonMatch[0])
-
-  // 验证并规范化数据
-  if (!Array.isArray(parsed)) {
-    throw new Error('返回格式错误：不是数组')
-  }
-
-  return parsed.map((item, index) => ({
-    day: typeof item.day === 'number' ? item.day : index + 1,
-    type: ['共鸣', '记录', '干货', '种草'].includes(item.type) ? item.type as ContentType : '干货',
-    topic: String(item.topic || '').replace(/[\n\r]/g, '').trim(),
-    intent: String(item.intent || '').replace(/[\n\r]/g, '').trim(),
-  }))
-}
-
 // POST /api/content-plan
 api.post('/content-plan', async (c) => {
   logger.info('content-plan', 'Request received')
@@ -130,29 +84,16 @@ api.post('/content-plan', async (c) => {
 
     logger.info('content-plan', 'Generating plan', { niche: params.niche, goal: params.goal })
 
-    // 检查 MiniMax 是否可用
-    if (!minimax.isConfigured()) {
-      logger.warn('content-plan', 'MiniMax not configured, using fallback')
-      return c.json<ContentPlanResponse>({
-        success: true,
-        data: FallbackResponses.contentPlan,
-        fallback: true,
-        timestamp: new Date().toISOString(),
-      })
-    }
+    // 调用 AI 生成内容日历
+    const { data, fallback } = await generateContentPlan(params)
 
-    // 调用 MiniMax API
-    const prompt = buildPrompt(params.niche, params.goal!, params.persona!)
-    const aiResponse = await minimax.chat(prompt)
-
-    // 解析返回内容
-    const contentPlan = parseAIResponse(aiResponse)
-
-    logger.info('content-plan', 'Generated content plan', { itemCount: contentPlan.length })
+    logger.info('content-plan', 'Generated content plan', { itemCount: data.length, fallback })
 
     return c.json<ContentPlanResponse>({
       success: true,
-      data: contentPlan,
+      data,
+      fallback,
+      timestamp: new Date().toISOString(),
     })
   } catch (error) {
     logger.error('content-plan', 'Error occurred', { error: error instanceof Error ? error.message : String(error) })

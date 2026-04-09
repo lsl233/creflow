@@ -1,37 +1,9 @@
-/**
- * MiniMax AI 客户端封装
- * 使用 MiniMax Text-01 模型 (Anthropic Claude 兼容 API)
- */
-
-interface ChatMessage {
-  role: 'system' | 'user' | 'assistant'
-  content: string
-}
-
-interface ChatCompletionOptions {
-  messages: ChatMessage[]
-  model?: string
-  max_tokens?: number
-  temperature?: number
-}
-
-interface ChatCompletionResponse {
-  id: string
-  model: string
-  choices: Array<{
-    index: number
-    message: {
-      role: string
-      content: string
-    }
-    finish_reason: string
-  }>
-  usage?: {
-    prompt_tokens: number
-    completion_tokens: number
-    total_tokens: number
-  }
-}
+import type {
+  AIClientConfig,
+  ChatMessage,
+  ChatCompletionOptions,
+  ChatCompletionResponse,
+} from './types.js'
 
 export class MiniMaxError extends Error {
   constructor(
@@ -49,13 +21,13 @@ export class MiniMaxClient {
   private baseUrl: string
   private defaultModel: string
 
-  constructor() {
-    this.apiKey = process.env.MINIMAX_API_KEY || ''
-    this.baseUrl = 'https://api.minimaxi.chat/v1'
-    this.defaultModel = 'MiniMax-Text-01'
+  constructor(config: AIClientConfig) {
+    this.apiKey = config.apiKey
+    this.baseUrl = config.baseUrl || 'https://api.minimaxi.com/v1'
+    this.defaultModel = config.model || 'MiniMax-M2.5'
 
     if (!this.apiKey) {
-      console.warn('[MiniMax] Warning: MINIMAX_API_KEY not set')
+      console.warn('[MiniMax] Warning: apiKey is empty')
     }
   }
 
@@ -124,5 +96,12 @@ export class MiniMaxClient {
   }
 }
 
-// 导出单例实例
-export const minimax = new MiniMaxClient()
+/**
+ * 创建 AI 客户端的工厂函数
+ */
+export function createAIClient(config: AIClientConfig): MiniMaxClient {
+  return new MiniMaxClient(config)
+}
+
+// 导出类型
+export type { AIClientConfig, ChatMessage, ChatCompletionOptions } from './types.js'
