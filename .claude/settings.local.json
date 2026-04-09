@@ -13,7 +13,20 @@
       "Bash(find /Users/xxx/Code/creflow -type f -name *.md -o -name .cursorrules -o -name CLAUDE.md)",
       "Bash(git init:*)",
       "Bash(git remote:*)",
-      "Bash(git add:*)"
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git branch:*)",
+      "Bash(git push:*)",
+      "Bash(pnpm tsc:*)",
+      "Bash(pnpm list:*)",
+      "Bash(pnpm -r tsc --noEmit)",
+      "Bash(pnpm build:*)",
+      "Bash(pnpm dlx:*)",
+      "Bash(printf '\\\\n\\\\n')",
+      "Bash(yes \"\")",
+      "Bash(curl -s https://raw.githubusercontent.com/shadcn-ui/ui/main/apps/www/public/r/styles/new-york/button.json)",
+      "Bash(pnpm add:*)",
+      "Bash(xargs sed:*)"
     ]
   }
 }

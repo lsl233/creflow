@@ -1,213 +1,107 @@
 import { useState } from 'react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { api } from '@/lib/api'
-import { storage } from '@/lib/storage'
-import { FormFieldWithExplanation } from '@/components/FormFieldWithExplanation'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Card, CardContent } from '@/components/ui/card'
+import { Sparkles, TrendingUp, CalendarDays, PenTool, ArrowRight } from 'lucide-react'
 
 export const Route = createFileRoute('/')({
-  component: HomePage,
+  component: LandingPage,
 })
 
-const FIELD_EXPLANATIONS = {
-  niche: {
-    why: 'AI 需要了解你的专业领域和细分市场，才能生成与你受众相关、有针对性的内容。清晰的定位帮助 AI 理解你希望覆盖的话题范围。',
-    impact: '内容定位决定了整个内容策略的走向——从选题方向、语言风格到专业术语的使用。专注的定位能吸引更精准的受众群体。',
-  },
-  goal: {
-    why: '不同的运营目标需要完全不同的内容策略。涨粉和变现在内容结构、互动设计上都有显著差异。',
-    impact: '选择「涨粉」会让内容更注重个人魅力展示和互动性；选择「变现」会侧重信任建立和行动号召。',
-  },
-  persona: {
-    why: '你呈现给受众的形象会影响内容的表达方式和语气。真实人设更容易建立情感连接，专业人设更容易建立权威感。',
-    impact: '「真实」人设会让内容更口语化、有个人故事、更接地气；「专业」人设会让内容更严谨、有行业洞察、更具权威性。',
-  },
-  frequency: {
-    why: '小红书算法偏好持续稳定的更新频率。保持规律发布能提高账号活跃度，获得更多推荐流量。',
-    impact: '高频发布（5-7次/周）能快速积累粉丝和曝光；低频发布（1-2次/周）能让每篇内容更精致。建议选择你能长期坚持的频率。',
-  },
-}
-
-function HomePage() {
+function LandingPage() {
   const navigate = useNavigate()
   const [niche, setNiche] = useState('')
-  const [goal, setGoal] = useState<'涨粉' | '变现'>('涨粉')
-  const [persona, setPersona] = useState<'真实' | '专业'>('真实')
-  const [frequency, setFrequency] = useState(2)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleStart = (e: React.FormEvent) => {
     e.preventDefault()
-    setError('')
-
-    if (!niche.trim()) {
-      setError('请输入你的内容定位')
-      return
-    }
-
-    setLoading(true)
-
-    try {
-      const response = await api.generateContentPlan({
-        niche: niche.trim(),
-        goal,
-        persona,
-        frequency,
-      })
-
-      if (response.data) {
-        storage.saveContentPlan(response.data, { niche: niche.trim(), goal, persona, frequency })
-        navigate({ to: '/calendar' })
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : '生成失败，请重试')
-    } finally {
-      setLoading(false)
+    if (niche.trim()) {
+      navigate({ to: '/setup', search: { niche: niche.trim() } })
     }
   }
 
   return (
-    <main className="page-wrap px-4 pb-8 pt-10">
-      <Card className="rise-in relative overflow-hidden border-none shadow-lg">
-        <div className="pointer-events-none absolute -left-16 -top-16 h-48 w-48 rounded-full bg-gradient-to-br from-rose-100 to-transparent" />
-        <div className="pointer-events-none absolute -bottom-16 -right-16 h-48 w-48 rounded-full bg-gradient-to-tl from-rose-50 to-transparent" />
+    <main className="min-h-screen bg-white">
+      {/* Hero Section */}
+      <section className="relative overflow-hidden pt-24 pb-32 px-4">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-[#ff2442]/10 via-white to-white -z-10" />
 
-        <CardContent className="relative px-6 py-8 sm:px-8 sm:py-10">
-          <h1 className="mb-2 text-2xl font-bold text-foreground sm:text-3xl">
-            告诉我你想做什么
+        <div className="max-w-4xl mx-auto text-center space-y-8">
+          <div className="inline-flex items-center rounded-full border border-[#ff2442]/30 bg-[#ff2442]/5 px-3 py-1 text-sm font-medium text-[#ff2442]">
+            <Sparkles className="mr-2 h-4 w-4" />
+            AI-Powered Xiaohongshu Growth
+          </div>
+
+          <h1 className="text-5xl md:text-7xl font-extrabold tracking-tight text-neutral-900">
+            10x Your <span className="text-[#ff2442]">Xiaohongshu</span> Content
           </h1>
-          <p className="mb-6 text-base text-muted-foreground">
-            输入你的内容定位，我来帮你规划一周的内容
+
+          <p className="text-xl text-neutral-500 max-w-2xl mx-auto leading-relaxed">
+            Stop staring at a blank page. Generate a full 7-day content calendar and viral-ready posts tailored exactly to your niche in seconds.
           </p>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
-            {/* 领域/定位 */}
-            <FormFieldWithExplanation
-              label="你的内容定位"
+          <form onSubmit={handleStart} className="max-w-xl mx-auto mt-10 relative flex items-center shadow-2xl shadow-[#ff2442]/10 rounded-full bg-white p-2 border border-neutral-200">
+            <Input
+              type="text"
+              placeholder="What is your account about? (e.g. Minimalist home decor)"
+              className="border-0 shadow-none focus-visible:ring-0 text-base px-6 h-12"
+              value={niche}
+              onChange={(e) => setNiche(e.target.value)}
               required
-              explanation={FIELD_EXPLANATIONS.niche}
-            >
-              <Input
-                type="text"
-                value={niche}
-                onChange={(e) => setNiche(e.target.value)}
-                placeholder="例如：职场成长、美食探店、宝妈育儿..."
-                className="h-12"
-              />
-            </FormFieldWithExplanation>
-
-            {/* 目标 */}
-            <FormFieldWithExplanation
-              label="你的目标是什么？"
-              explanation={FIELD_EXPLANATIONS.goal}
-            >
-              <div className="flex gap-3">
-                <Button
-                  type="button"
-                  variant={goal === '涨粉' ? 'default' : 'outline'}
-                  onClick={() => setGoal('涨粉')}
-                  className="flex-1 h-12"
-                >
-                  涨粉
-                </Button>
-                <Button
-                  type="button"
-                  variant={goal === '变现' ? 'default' : 'outline'}
-                  onClick={() => setGoal('变现')}
-                  className="flex-1 h-12"
-                >
-                  变现
-                </Button>
-              </div>
-            </FormFieldWithExplanation>
-
-            {/* 人设 */}
-            <FormFieldWithExplanation
-              label="你想呈现什么样的人设？"
-              explanation={FIELD_EXPLANATIONS.persona}
-            >
-              <div className="flex gap-3">
-                <Button
-                  type="button"
-                  variant={persona === '真实' ? 'default' : 'outline'}
-                  onClick={() => setPersona('真实')}
-                  className="flex-1 h-12"
-                >
-                  真实
-                </Button>
-                <Button
-                  type="button"
-                  variant={persona === '专业' ? 'default' : 'outline'}
-                  onClick={() => setPersona('专业')}
-                  className="flex-1 h-12"
-                >
-                  专业
-                </Button>
-              </div>
-            </FormFieldWithExplanation>
-
-            {/* 发布频率 */}
-            <FormFieldWithExplanation
-              label="每周发布几次？"
-              explanation={FIELD_EXPLANATIONS.frequency}
-            >
-              <div className="flex items-center gap-4">
-                <Input
-                  type="number"
-                  min={1}
-                  max={7}
-                  value={frequency}
-                  onChange={(e) => setFrequency(Math.max(1, Math.min(7, parseInt(e.target.value) || 1)))}
-                  className="w-24 h-12"
-                />
-                <span className="text-base text-muted-foreground">次/周</span>
-              </div>
-            </FormFieldWithExplanation>
-
-            {/* 错误提示 */}
-            {error && (
-              <div className="rounded-lg bg-destructive/10 px-4 py-3 text-base text-destructive">
-                {error}
-              </div>
-            )}
-
-            {/* 提交按钮 */}
+            />
             <Button
               type="submit"
-              disabled={loading}
-              className="w-full h-14 text-base font-semibold"
               size="lg"
+              className="rounded-full bg-[#ff2442] hover:bg-[#e01f39] text-white px-8 h-12"
+              disabled={!niche.trim()}
             >
-              {loading ? (
-                <span className="flex items-center justify-center gap-2">
-                  <svg className="h-5 w-5 animate-spin" viewBox="0 0 24 24">
-                    <circle
-                      className="opacity-25"
-                      cx="12"
-                      cy="12"
-                      r="10"
-                      stroke="currentColor"
-                      strokeWidth="4"
-                      fill="none"
-                    />
-                    <path
-                      className="opacity-75"
-                      fill="currentColor"
-                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
-                    />
-                  </svg>
-                  生成中...
-                </span>
-              ) : (
-                '生成我的内容日历'
-              )}
+              Start Creating
+              <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </form>
-        </CardContent>
-      </Card>
+          <p className="text-sm text-neutral-400 mt-4">No credit card required. Start generating immediately.</p>
+        </div>
+      </section>
+
+      {/* Features Section */}
+      <section className="py-24 bg-neutral-50 px-4">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-neutral-900">Everything you need to go viral</h2>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="bg-white p-8 rounded-2xl shadow-sm border border-neutral-100">
+              <div className="w-12 h-12 bg-[#ff2442]/10 rounded-xl flex items-center justify-center mb-6">
+                <CalendarDays className="h-6 w-6 text-[#ff2442]" />
+              </div>
+              <h3 className="text-xl font-bold mb-3">7-Day Content Calendar</h3>
+              <p className="text-neutral-500 leading-relaxed">
+                Never run out of ideas. Get a structured week of engaging topics and descriptions tailored to your specific audience.
+              </p>
+            </div>
+
+            <div className="bg-white p-8 rounded-2xl shadow-sm border border-neutral-100">
+              <div className="w-12 h-12 bg-[#ff2442]/10 rounded-xl flex items-center justify-center mb-6">
+                <PenTool className="h-6 w-6 text-[#ff2442]" />
+              </div>
+              <h3 className="text-xl font-bold mb-3">Viral Copywriting</h3>
+              <p className="text-neutral-500 leading-relaxed">
+                Generate click-worthy titles, emoji-rich formatting, and conversational body text that perfectly matches the Xiaohongshu vibe.
+              </p>
+            </div>
+
+            <div className="bg-white p-8 rounded-2xl shadow-sm border border-neutral-100">
+              <div className="w-12 h-12 bg-[#ff2442]/10 rounded-xl flex items-center justify-center mb-6">
+                <TrendingUp className="h-6 w-6 text-[#ff2442]" />
+              </div>
+              <h3 className="text-xl font-bold mb-3">Visual Direction</h3>
+              <p className="text-neutral-500 leading-relaxed">
+                Get specific suggestions for your image carousel and the exact hashtags you need to maximize your reach and engagement.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
     </main>
   )
 }

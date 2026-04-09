@@ -9,10 +9,16 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SetupRouteImport } from './routes/setup'
 import { Route as CalendarRouteImport } from './routes/calendar'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as GenerateDayRouteImport } from './routes/generate.$day'
 
+const SetupRoute = SetupRouteImport.update({
+  id: '/setup',
+  path: '/setup',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CalendarRoute = CalendarRouteImport.update({
   id: '/calendar',
   path: '/calendar',
@@ -32,35 +38,46 @@ const GenerateDayRoute = GenerateDayRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/calendar': typeof CalendarRoute
+  '/setup': typeof SetupRoute
   '/generate/$day': typeof GenerateDayRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/calendar': typeof CalendarRoute
+  '/setup': typeof SetupRoute
   '/generate/$day': typeof GenerateDayRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/calendar': typeof CalendarRoute
+  '/setup': typeof SetupRoute
   '/generate/$day': typeof GenerateDayRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/calendar' | '/generate/$day'
+  fullPaths: '/' | '/calendar' | '/setup' | '/generate/$day'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/calendar' | '/generate/$day'
-  id: '__root__' | '/' | '/calendar' | '/generate/$day'
+  to: '/' | '/calendar' | '/setup' | '/generate/$day'
+  id: '__root__' | '/' | '/calendar' | '/setup' | '/generate/$day'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CalendarRoute: typeof CalendarRoute
+  SetupRoute: typeof SetupRoute
   GenerateDayRoute: typeof GenerateDayRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/setup': {
+      id: '/setup'
+      path: '/setup'
+      fullPath: '/setup'
+      preLoaderRoute: typeof SetupRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/calendar': {
       id: '/calendar'
       path: '/calendar'
@@ -88,6 +105,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CalendarRoute: CalendarRoute,
+  SetupRoute: SetupRoute,
   GenerateDayRoute: GenerateDayRoute,
 }
 export const routeTree = rootRouteImport
