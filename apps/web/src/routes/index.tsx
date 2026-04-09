@@ -2,13 +2,13 @@ import { useState, useEffect } from 'react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Sparkles, TrendingUp, CalendarDays, PenTool, ArrowRight, ChevronDown } from 'lucide-react'
+import { Sparkles, TrendingUp, CalendarDays, PenTool, ArrowRight, ChevronDown, Zap, Shield } from 'lucide-react'
 
 export const Route = createFileRoute('/')({
   component: LandingPage,
 })
 
-// 动态打字机效果组件
+// Dynamic typewriter effect
 function TypewriterText({ texts, className }: { texts: string[]; className?: string }) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [currentText, setCurrentText] = useState('')
@@ -43,26 +43,27 @@ function TypewriterText({ texts, className }: { texts: string[]; className?: str
   )
 }
 
-// 浮动装饰元素
+// Floating decorative elements
 function FloatingElements() {
   return (
     <>
-      {/* 大圆形装饰 */}
-      <div className="absolute -top-20 -right-20 w-96 h-96 bg-gradient-to-br from-[#ff2442]/10 to-[#fb7299]/5 rounded-full blur-3xl animate-float" />
-      <div className="absolute top-1/3 -left-32 w-80 h-80 bg-gradient-to-tr from-[#fb7299]/10 to-[#ff6b6b]/5 rounded-full blur-3xl animate-float-delayed" />
+      {/* Gradient orbs */}
+      <div className="absolute -top-32 -right-32 w-[500px] h-[500px] bg-gradient-to-br from-[#dc2641]/8 to-transparent rounded-full blur-3xl animate-float-slow" />
+      <div className="absolute top-1/4 -left-48 w-[400px] h-[400px] bg-gradient-to-tr from-[#ff6b7a]/6 to-transparent rounded-full blur-3xl animate-float" />
+      <div className="absolute bottom-1/4 right-1/4 w-[300px] h-[300px] bg-gradient-to-bl from-[#ff8fa3]/5 to-transparent rounded-full blur-3xl animate-float-gentle" />
 
-      {/* 小装饰形状 */}
-      <div className="absolute top-32 right-[15%] w-16 h-16 border-2 border-[#ff2442]/20 shape-blob animate-float" />
-      <div className="absolute bottom-48 left-[10%] w-12 h-12 bg-gradient-to-br from-[#ff2442]/20 to-[#fb7299]/20 shape-blob-2 animate-float-delayed" />
-      <div className="absolute top-1/2 right-[8%] w-8 h-8 bg-[#ff2442]/10 rotate-45 animate-float" />
+      {/* Decorative shapes */}
+      <div className="absolute top-40 right-[20%] w-20 h-20 border border-[#dc2641]/10 rounded-2xl rotate-12 animate-float hidden lg:block" />
+      <div className="absolute bottom-48 left-[15%] w-14 h-14 bg-gradient-to-br from-[#dc2641]/10 to-[#ff6b7a]/5 rounded-xl -rotate-6 animate-float-slow hidden lg:block" />
+      <div className="absolute top-1/2 right-[10%] w-8 h-8 bg-[#dc2641]/5 rotate-45 animate-float-gentle hidden lg:block" />
 
-      {/* 点阵网格背景 */}
-      <div className="absolute inset-0 bg-grid opacity-50" />
+      {/* Grid background */}
+      <div className="absolute inset-0 bg-grid opacity-40" />
     </>
   )
 }
 
-// 特性卡片组件
+// Feature card component
 function FeatureCard({
   icon: Icon,
   title,
@@ -76,19 +77,29 @@ function FeatureCard({
 }) {
   return (
     <div
-      className="group relative bg-white/80 backdrop-blur-sm rounded-2xl p-8 border border-neutral-100 card-hover opacity-0 animate-fade-in-up"
-      style={{ animationDelay: `${0.6 + index * 0.1}s`, animationFillMode: 'forwards' }}
+      className="group relative bg-white/90 backdrop-blur-sm rounded-2xl p-8 border border-black/[0.06] transition-all duration-500 opacity-0 animate-fade-in-up hover:shadow-xl hover:shadow-[#dc2641]/5 hover:-translate-y-1"
+      style={{ animationDelay: `${0.5 + index * 0.1}s`, animationFillMode: 'forwards' }}
     >
-      {/* 悬停光效 */}
-      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#ff2442]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+      {/* Hover glow */}
+      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#dc2641]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
       <div className="relative">
-        <div className="w-14 h-14 bg-gradient-to-br from-[#ff2442]/10 to-[#fb7299]/10 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
-          <Icon className="h-7 w-7 text-[#ff2442]" />
+        <div className="w-14 h-14 bg-gradient-to-br from-[#dc2641]/10 to-[#ff6b7a]/5 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300 shadow-sm">
+          <Icon className="h-7 w-7 text-[#dc2641]" />
         </div>
-        <h3 className="text-xl font-bold mb-3 text-neutral-900">{title}</h3>
-        <p className="text-neutral-500 leading-relaxed">{description}</p>
+        <h3 className="text-xl font-bold mb-3 text-[#1a1a1a] tracking-tight">{title}</h3>
+        <p className="text-[#6b6b6b] leading-relaxed">{description}</p>
       </div>
+    </div>
+  )
+}
+
+// Stat item component
+function StatItem({ value, label }: { value: string; label: string }) {
+  return (
+    <div className="text-center">
+      <div className="text-2xl sm:text-3xl font-bold text-[#1a1a1a] tracking-tight">{value}</div>
+      <div className="text-xs sm:text-sm text-[#6b6b6b]">{label}</div>
     </div>
   )
 }
@@ -108,41 +119,39 @@ function LandingPage() {
   const exampleNiches = ['极简家居', '数码测评', '美食探店', '职场干货', '旅行攻略']
 
   return (
-    <main className="min-h-screen bg-[#fff7f8] relative overflow-hidden">
+    <main className="min-h-screen bg-[#faf9f7] relative overflow-hidden pt-20">
       <FloatingElements />
 
       {/* Hero Section */}
-      <section className="relative pt-24 pb-20 px-4 sm:px-6 lg:px-8">
+      <section className="relative px-4 sm:px-6 lg:px-8 pb-20 sm:pb-32">
         <div className="max-w-5xl mx-auto">
-          {/* 标签 */}
-          <div className="flex justify-center mb-8 opacity-0 animate-fade-in-up" style={{ animationFillMode: 'forwards' }}>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-[#ff2442]/20 shadow-sm">
-              <span className="w-2 h-2 rounded-full bg-[#ff2442] animate-pulse" />
-              <span className="text-sm font-medium text-[#ff2442]">AI 驱动的小红书增长引擎</span>
+          {/* Kicker */}
+          <div className="flex justify-center mb-6 opacity-0 animate-fade-in-up" style={{ animationFillMode: 'forwards' }}>
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/90 backdrop-blur-sm border border-[#dc2641]/10 shadow-sm">
+              <span className="w-2 h-2 rounded-full bg-[#dc2641] animate-pulse" />
+              <span className="text-sm font-medium text-[#dc2641]">AI 驱动的小红书增长引擎</span>
             </div>
           </div>
 
-          {/* 主标题 */}
+          {/* Main Heading - Editorial Style */}
           <div className="text-center mb-8">
-            <h1 className="text-4xl sm:text-5xl md:text-7xl font-black text-neutral-900 leading-[1.1] mb-6 opacity-0 animate-fade-in-up stagger-2" style={{ animationFillMode: 'forwards' }}>
-              让你的
-              <span className="gradient-text"> 小红书 </span>
-              <br className="hidden sm:block" />
-              内容
-              <span className="highlight-mark"> 10 倍出彩</span>
+            <h1 className="editorial-heading-xl text-[#1a1a1a] mb-6 opacity-0 animate-fade-in-up" style={{ animationDelay: '0.1s', animationFillMode: 'forwards' }}>
+              让你的小红书
+              <br />
+              <span className="gradient-text">10 倍出彩</span>
             </h1>
 
-            <p className="text-lg sm:text-xl text-neutral-600 max-w-2xl mx-auto leading-relaxed opacity-0 animate-fade-in-up stagger-3" style={{ animationFillMode: 'forwards' }}>
+            <p className="text-lg sm:text-xl text-[#6b6b6b] max-w-2xl mx-auto leading-relaxed opacity-0 animate-fade-in-up" style={{ animationDelay: '0.2s', animationFillMode: 'forwards' }}>
               不再对着空白页面发呆。几秒钟内生成完整的
-              <span className="font-semibold text-[#ff2442]"> 7 天内容日历 </span>
+              <span className="font-semibold text-[#dc2641]"> 7 天内容日历 </span>
               和爆款笔记，精准匹配你的领域定位。
             </p>
           </div>
 
-          {/* 动态示例文字 */}
-          <div className="text-center mb-10 opacity-0 animate-fade-in-up stagger-4" style={{ animationFillMode: 'forwards' }}>
-            <p className="text-sm text-neutral-400 mb-2">已为数千位创作者生成内容</p>
-            <div className="inline-flex items-center gap-2 text-[#ff2442]">
+          {/* Dynamic Example Text */}
+          <div className="text-center mb-10 opacity-0 animate-fade-in-up" style={{ animationDelay: '0.3s', animationFillMode: 'forwards' }}>
+            <p className="text-xs text-[#6b6b6b] mb-2 uppercase tracking-wider">已为数千位创作者生成内容</p>
+            <div className="inline-flex items-center gap-2 text-[#dc2641] bg-[#dc2641]/5 px-4 py-2 rounded-full">
               <Sparkles className="w-4 h-4" />
               <TypewriterText
                 texts={exampleNiches.map((n) => `${n}博主的内容日历`)}
@@ -151,24 +160,24 @@ function LandingPage() {
             </div>
           </div>
 
-          {/* 主输入框 */}
+          {/* Main Input */}
           <form
             onSubmit={handleStart}
-            className={`max-w-2xl mx-auto opacity-0 animate-fade-in-up stagger-5 ${isFocused ? 'scale-[1.02]' : ''} transition-transform duration-300`}
-            style={{ animationFillMode: 'forwards' }}
+            className={`max-w-2xl mx-auto opacity-0 animate-fade-in-up transition-all duration-300 ${isFocused ? 'scale-[1.02]' : 'scale-100'}`}
+            style={{ animationDelay: '0.4s', animationFillMode: 'forwards' }}
           >
             <div className="relative">
-              {/* 光晕背景 */}
-              <div className={`absolute -inset-1 bg-gradient-to-r from-[#ff2442]/20 via-[#fb7299]/20 to-[#ff2442]/20 rounded-full blur-xl transition-opacity duration-300 ${isFocused ? 'opacity-100' : 'opacity-0'}`} />
+              {/* Glow effect */}
+              <div className={`absolute -inset-1 bg-gradient-to-r from-[#dc2641]/20 via-[#ff6b7a]/20 to-[#dc2641]/20 rounded-2xl blur-xl transition-opacity duration-300 ${isFocused ? 'opacity-100' : 'opacity-0'}`} />
 
-              <div className="relative flex items-center bg-white rounded-full shadow-2xl shadow-[#ff2442]/10 border border-neutral-200 p-2">
-                <div className="pl-6 pr-3">
-                  <PenTool className="w-5 h-5 text-neutral-400" />
+              <div className="relative flex items-center bg-white rounded-2xl shadow-xl shadow-black/5 border border-black/[0.08] p-2">
+                <div className="pl-5 pr-3">
+                  <PenTool className="w-5 h-5 text-[#6b6b6b]" />
                 </div>
                 <Input
                   type="text"
                   placeholder="你的账号定位是什么？"
-                  className="flex-1 border-0 shadow-none focus-visible:ring-0 text-base px-0 h-12 bg-transparent"
+                  className="flex-1 border-0 shadow-none focus-visible:ring-0 text-base px-0 h-14 bg-transparent placeholder:text-[#6b6b6b]/60"
                   value={niche}
                   onChange={(e) => setNiche(e.target.value)}
                   onFocus={() => setIsFocused(true)}
@@ -178,24 +187,24 @@ function LandingPage() {
                 <Button
                   type="submit"
                   size="lg"
-                  className="rounded-full bg-gradient-to-r from-[#ff2442] to-[#fb7299] hover:from-[#e01f39] hover:to-[#e85f87] text-white px-8 h-12 btn-shine shadow-lg shadow-[#ff2442]/25"
+                  className="rounded-xl bg-gradient-to-r from-[#dc2641] to-[#ff6b7a] hover:from-[#b91c36] hover:to-[#e85a68] text-white px-6 h-12 btn-shine shadow-lg shadow-[#dc2641]/25 transition-all duration-300 hover:shadow-xl hover:shadow-[#dc2641]/30"
                   disabled={!niche.trim()}
                 >
-                  <span className="hidden sm:inline">开始创作</span>
-                  <ArrowRight className="sm:ml-2 h-4 w-4" />
+                  <span className="hidden sm:inline font-semibold">开始创作</span>
+                  <ArrowRight className="sm:ml-2 h-5 w-5" />
                 </Button>
               </div>
             </div>
 
-            {/* 快速标签 */}
-            <div className="flex flex-wrap justify-center gap-2 mt-4">
-              <span className="text-xs text-neutral-400">热门领域：</span>
+            {/* Quick tags */}
+            <div className="flex flex-wrap justify-center items-center gap-2 mt-5">
+              <span className="text-xs text-[#6b6b6b]">热门领域：</span>
               {exampleNiches.map((example) => (
                 <button
                   key={example}
                   type="button"
                   onClick={() => setNiche(example)}
-                  className="text-xs px-3 py-1 rounded-full bg-white/60 hover:bg-white border border-neutral-200 hover:border-[#ff2442]/30 text-neutral-600 hover:text-[#ff2442] transition-colors"
+                  className="text-xs px-3 py-1.5 rounded-full bg-white/70 hover:bg-white border border-black/[0.08] hover:border-[#dc2641]/30 text-[#6b6b6b] hover:text-[#dc2641] transition-all duration-200"
                 >
                   {example}
                 </button>
@@ -203,52 +212,69 @@ function LandingPage() {
             </div>
           </form>
 
-          {/* 信任指标 */}
-          <div className="flex justify-center items-center gap-8 mt-12 text-sm text-neutral-400 opacity-0 animate-fade-in-up" style={{ animationDelay: '0.8s', animationFillMode: 'forwards' }}>
+          {/* Trust indicators */}
+          <div className="flex flex-wrap justify-center items-center gap-6 sm:gap-10 mt-12 text-sm text-[#6b6b6b] opacity-0 animate-fade-in-up" style={{ animationDelay: '0.6s', animationFillMode: 'forwards' }}>
             <div className="flex items-center gap-2">
               <div className="flex -space-x-2">
                 {[1, 2, 3].map((i) => (
                   <div
                     key={i}
-                    className="w-8 h-8 rounded-full bg-gradient-to-br from-[#ff2442]/20 to-[#fb7299]/20 border-2 border-white flex items-center justify-center text-xs font-bold text-[#ff2442]"
+                    className="w-8 h-8 rounded-full bg-gradient-to-br from-[#dc2641]/20 to-[#ff6b7a]/20 border-2 border-white flex items-center justify-center text-xs font-bold text-[#dc2641]"
                   >
                     {String.fromCharCode(64 + i)}
                   </div>
                 ))}
               </div>
-              <span>10,000+ 创作者信赖</span>
+              <span className="font-medium">10,000+ 创作者信赖</span>
             </div>
-            <div className="w-px h-4 bg-neutral-300" />
-            <span>无需信用卡</span>
-            <div className="w-px h-4 bg-neutral-300" />
-            <span>永久免费试用</span>
+            <div className="hidden sm:block w-px h-4 bg-black/[0.1]" />
+            <div className="flex items-center gap-1.5">
+              <Shield className="w-4 h-4 text-[#dc2641]" />
+              <span>无需信用卡</span>
+            </div>
+            <div className="hidden sm:block w-px h-4 bg-black/[0.1]" />
+            <div className="flex items-center gap-1.5">
+              <Zap className="w-4 h-4 text-[#dc2641]" />
+              <span>永久免费试用</span>
+            </div>
           </div>
         </div>
 
-        {/* 滚动提示 */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 opacity-0 animate-fade-in-up" style={{ animationDelay: '1s', animationFillMode: 'forwards' }}>
-          <div className="flex flex-col items-center text-neutral-400 animate-scroll">
-            <span className="text-xs mb-2">向下滚动</span>
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 opacity-0 animate-fade-in-up hidden sm:block" style={{ animationDelay: '0.8s', animationFillMode: 'forwards' }}>
+          <div className="flex flex-col items-center text-[#6b6b6b] animate-scroll">
+            <span className="text-xs mb-2 uppercase tracking-wider">探索更多</span>
             <ChevronDown className="w-5 h-5" />
           </div>
         </div>
       </section>
 
+      {/* Stats Section */}
+      <section className="relative py-16 px-4 sm:px-6 lg:px-8 border-y border-black/[0.06] bg-white/50">
+        <div className="max-w-4xl mx-auto">
+          <div className="grid grid-cols-3 gap-8 opacity-0 animate-fade-in-up" style={{ animationFillMode: 'forwards' }}>
+            <StatItem value="10K+" label="活跃创作者" />
+            <StatItem value="50K+" label="生成内容" />
+            <StatItem value="98%" label="满意度" />
+          </div>
+        </div>
+      </section>
+
       {/* Features Section */}
-      <section className="relative py-24 px-4 sm:px-6 lg:px-8">
-        {/* 背景装饰 */}
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/50 to-transparent" />
+      <section className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8">
+        {/* Background decoration */}
+        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-white/30 to-transparent" />
 
         <div className="max-w-6xl mx-auto relative">
           {/* Section Header */}
-          <div className="text-center mb-16">
-            <span className="inline-block px-4 py-1.5 rounded-full bg-[#ff2442]/10 text-[#ff2442] text-sm font-semibold mb-4 opacity-0 animate-fade-in-up" style={{ animationFillMode: 'forwards' }}>
+          <div className="text-center mb-16 sm:mb-20">
+            <span className="kicker mb-4 opacity-0 animate-fade-in-up block" style={{ animationFillMode: 'forwards' }}>
               核心功能
             </span>
-            <h2 className="text-3xl sm:text-4xl font-black text-neutral-900 mb-4 opacity-0 animate-fade-in-up" style={{ animationDelay: '0.1s', animationFillMode: 'forwards' }}>
+            <h2 className="editorial-heading-lg text-[#1a1a1a] mb-4 opacity-0 animate-fade-in-up" style={{ animationDelay: '0.1s', animationFillMode: 'forwards' }}>
               助你打造爆款的一切
             </h2>
-            <p className="text-neutral-500 max-w-xl mx-auto opacity-0 animate-fade-in-up" style={{ animationDelay: '0.2s', animationFillMode: 'forwards' }}>
+            <p className="text-[#6b6b6b] max-w-xl mx-auto text-lg opacity-0 animate-fade-in-up" style={{ animationDelay: '0.2s', animationFillMode: 'forwards' }}>
               从内容规划到文案生成，AI 助手全程陪伴你的创作之旅
             </p>
           </div>
@@ -277,16 +303,56 @@ function LandingPage() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="relative py-24 px-4 sm:px-6 lg:px-8">
+      {/* How It Works Section */}
+      <section className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8 bg-white/50">
         <div className="max-w-4xl mx-auto">
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#ff2442] to-[#fb7299] p-8 sm:p-12 text-center">
-            {/* 装饰背景 */}
+          <div className="text-center mb-16">
+            <span className="kicker mb-4 block opacity-0 animate-fade-in-up" style={{ animationFillMode: 'forwards' }}>
+              使用流程
+            </span>
+            <h2 className="editorial-heading-lg text-[#1a1a1a] opacity-0 animate-fade-in-up" style={{ animationDelay: '0.1s', animationFillMode: 'forwards' }}>
+              三步开启创作
+            </h2>
+          </div>
+
+          <div className="grid sm:grid-cols-3 gap-8">
+            {[
+              { step: '01', title: '输入定位', desc: '告诉我们你的账号领域和目标受众' },
+              { step: '02', title: '生成日历', desc: 'AI 为你量身定制 7 天内容规划' },
+              { step: '03', title: '发布内容', desc: '逐日生成爆款文案，一键复制发布' },
+            ].map((item, index) => (
+              <div
+                key={item.step}
+                className="relative text-center opacity-0 animate-fade-in-up group"
+                style={{ animationDelay: `${0.2 + index * 0.1}s`, animationFillMode: 'forwards' }}
+              >
+                <div className="w-16 h-16 mx-auto mb-6 rounded-2xl bg-gradient-to-br from-[#dc2641]/10 to-[#ff6b7a]/5 flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                  <span className="text-2xl font-bold text-[#dc2641]">{item.step}</span>
+                </div>
+                <h3 className="text-lg font-bold text-[#1a1a1a] mb-2">{item.title}</h3>
+                <p className="text-sm text-[#6b6b6b]">{item.desc}</p>
+
+                {/* Connector line */}
+                {index < 2 && (
+                  <div className="hidden sm:block absolute top-8 left-[calc(50%+3rem)] w-[calc(100%-6rem)] h-[2px] bg-gradient-to-r from-[#dc2641]/20 to-transparent" />
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* CTA Section */}
+      <section className="relative py-24 sm:py-32 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#dc2641] to-[#ff6b7a] p-8 sm:p-12 text-center shadow-2xl shadow-[#dc2641]/20">
+            {/* Decorative elements */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl" />
             <div className="absolute bottom-0 left-0 w-48 h-48 bg-white/10 rounded-full blur-2xl" />
+            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-gradient-to-br from-white/5 to-transparent" />
 
             <div className="relative">
-              <h2 className="text-3xl sm:text-4xl font-black text-white mb-4">
+              <h2 className="text-3xl sm:text-4xl font-bold text-white mb-4 tracking-tight">
                 准备好提升你的内容了吗？
               </h2>
               <p className="text-white/80 text-lg mb-8 max-w-xl mx-auto">
@@ -295,7 +361,7 @@ function LandingPage() {
               <Button
                 onClick={() => document.querySelector('input')?.focus()}
                 size="lg"
-                className="rounded-full bg-white text-[#ff2442] hover:bg-white/90 px-8 h-14 text-base font-bold shadow-xl"
+                className="rounded-full bg-white text-[#dc2641] hover:bg-white/90 px-8 h-14 text-base font-bold shadow-xl transition-all duration-300 hover:shadow-2xl hover:scale-105"
               >
                 立即免费开始
                 <ArrowRight className="ml-2 h-5 w-5" />

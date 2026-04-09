@@ -20,11 +20,11 @@ export const Route = createRootRoute({
         content: 'width=device-width, initial-scale=1',
       },
       {
-        title: 'Xiaohongshu AI Assistant',
+        title: '小红书内容助手 - AI 驱动的内容创作',
       },
       {
         name: 'description',
-        content: 'Generate your 7-day content calendar and single posts in seconds.',
+        content: '几秒钟内生成完整的 7 天内容日历和爆款笔记，精准匹配你的领域定位。',
       },
     ],
     links: [
@@ -44,7 +44,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
         <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
         <HeadContent />
       </head>
-      <body className="font-sans antialiased [overflow-wrap:anywhere] selection:bg-[rgba(79,184,178,0.24)]">
+      <body className="font-sans antialiased [overflow-wrap:anywhere] bg-[#faf9f7] text-[#1a1a1a]">
         <Header />
         {children}
         <Footer />

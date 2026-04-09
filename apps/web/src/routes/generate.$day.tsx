@@ -7,14 +7,10 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
-import { ChevronLeft, Copy, Check, Sparkles, FileText, Hash, Image, Share2, Download, RefreshCw } from 'lucide-react'
+import { ChevronLeft, Copy, Check, Sparkles, FileText, Hash, Image, RefreshCw, Download, Wand2, Lightbulb, Share2 } from 'lucide-react'
 import { toast } from 'sonner'
 
-export const Route = createFileRoute('/generate/$day')({
-  component: GeneratePage,
-})
-
-// 内容类型配置
+// Content type configuration
 const TYPE_CONFIG: Record<string, { bg: string; text: string; border: string; gradient: string; icon: React.ElementType }> = {
   '共鸣': {
     bg: 'bg-rose-50',
@@ -35,18 +31,18 @@ const TYPE_CONFIG: Record<string, { bg: string; text: string; border: string; gr
     text: 'text-blue-700',
     border: 'border-blue-200',
     gradient: 'from-blue-500 to-cyan-500',
-    icon: FileText,
+    icon: Wand2,
   },
   '种草': {
     bg: 'bg-green-50',
     text: 'text-green-700',
     border: 'border-green-200',
     gradient: 'from-green-500 to-emerald-500',
-    icon: Sparkles,
+    icon: Lightbulb,
   },
 }
 
-// 复制按钮组件
+// Copy button component
 function CopyButton({ text, label, onCopy }: { text: string; label: string; onCopy: () => void }) {
   const [copied, setCopied] = useState(false)
 
@@ -67,8 +63,8 @@ function CopyButton({ text, label, onCopy }: { text: string; label: string; onCo
       size="sm"
       onClick={handleCopy}
       className={cn(
-        'text-sm font-medium transition-all duration-200',
-        copied ? 'text-green-600 bg-green-50' : 'text-[#ff2442] hover:text-[#ff2442] hover:bg-[#ff2442]/10'
+        'text-sm font-medium transition-all duration-200 rounded-lg',
+        copied ? 'text-green-600 bg-green-50' : 'text-[#dc2641] hover:text-[#dc2641] hover:bg-[#dc2641]/10'
       )}
     >
       {copied ? <Check className="mr-1.5 h-4 w-4" /> : <Copy className="mr-1.5 h-4 w-4" />}
@@ -77,7 +73,7 @@ function CopyButton({ text, label, onCopy }: { text: string; label: string; onCo
   )
 }
 
-// 内容卡片组件
+// Content card component
 function ContentCard({
   title,
   icon: Icon,
@@ -92,14 +88,14 @@ function ContentCard({
   onCopy: () => void
 }) {
   return (
-    <Card className="border-0 shadow-lg shadow-neutral-100 overflow-hidden group">
-      <CardHeader className="bg-neutral-50/50 border-b border-neutral-100 py-4">
+    <Card className="border-0 shadow-lg shadow-black/5 overflow-hidden group bg-white/95 backdrop-blur-sm">
+      <CardHeader className="bg-black/[0.02] border-b border-black/[0.06] py-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-[#ff2442]/10 flex items-center justify-center">
-              <Icon className="h-4 w-4 text-[#ff2442]" />
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-[#dc2641]/10 flex items-center justify-center">
+              <Icon className="h-4 w-4 text-[#dc2641]" />
             </div>
-            <CardTitle className="text-sm font-semibold text-neutral-600">{title}</CardTitle>
+            <CardTitle className="text-sm font-semibold text-[#1a1a1a]">{title}</CardTitle>
           </div>
           <CopyButton text={copyText} label="复制" onCopy={onCopy} />
         </div>
@@ -109,7 +105,7 @@ function ContentCard({
   )
 }
 
-// 标签展示组件
+// Tag display component
 function TagDisplay({ tags }: { tags: string[] }) {
   return (
     <div className="flex flex-wrap gap-2">
@@ -117,7 +113,7 @@ function TagDisplay({ tags }: { tags: string[] }) {
         <Badge
           key={index}
           variant="secondary"
-          className="px-3 py-1.5 bg-gradient-to-r from-[#ff2442]/10 to-[#fb7299]/10 text-[#ff2442] border-0 font-medium hover:from-[#ff2442]/20 hover:to-[#fb7299]/20 transition-colors cursor-pointer"
+          className="px-3 py-1.5 bg-gradient-to-r from-[#dc2641]/10 to-[#ff6b7a]/10 text-[#dc2641] border-0 font-medium hover:from-[#dc2641]/20 hover:to-[#ff6b7a]/20 transition-colors cursor-pointer rounded-full"
         >
           #{tag}
         </Badge>
@@ -126,16 +122,16 @@ function TagDisplay({ tags }: { tags: string[] }) {
   )
 }
 
-// 图片建议组件
+// Image suggestions component
 function ImageSuggestions({ suggestions }: { suggestions: string[] }) {
   return (
-    <ul className="space-y-3">
+    <ul className="space-y-4">
       {suggestions.map((suggestion, index) => (
-        <li key={index} className="flex items-start gap-3 group">
-          <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#ff2442] to-[#fb7299] flex items-center justify-center flex-shrink-0 text-white text-xs font-bold group-hover:scale-110 transition-transform">
+        <li key={index} className="flex items-start gap-4 group">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#dc2641] to-[#ff6b7a] flex items-center justify-center flex-shrink-0 text-white text-sm font-bold group-hover:scale-110 transition-transform shadow-md shadow-[#dc2641]/20">
             {index + 1}
           </div>
-          <p className="text-sm text-neutral-700 leading-relaxed pt-0.5">{suggestion}</p>
+          <p className="text-sm text-[#1a1a1a] leading-relaxed pt-1">{suggestion}</p>
         </li>
       ))}
     </ul>
@@ -224,19 +220,19 @@ function GeneratePage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-[#fff7f8] p-4 md:p-8">
+      <main className="min-h-screen bg-[#faf9f7] p-4 md:p-8 pt-24">
         <div className="max-w-3xl mx-auto">
           <div className="flex items-center justify-center min-h-[60vh]">
-            <Card className="border-0 shadow-xl w-full max-w-md">
+            <Card className="border-0 shadow-xl w-full max-w-md bg-white/95 backdrop-blur-sm">
               <CardContent className="flex flex-col items-center justify-center py-16">
                 <div className="relative mb-6">
-                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#ff2442]/20 to-[#fb7299]/20 flex items-center justify-center">
-                    <Sparkles className="h-8 w-8 text-[#ff2442] animate-pulse" />
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#dc2641]/20 to-[#ff6b7a]/20 flex items-center justify-center">
+                    <Sparkles className="h-8 w-8 text-[#dc2641] animate-pulse" />
                   </div>
-                  <div className="absolute -inset-2 rounded-2xl border-2 border-[#ff2442]/20 animate-ping" />
+                  <div className="absolute -inset-2 rounded-2xl border-2 border-[#dc2641]/20 animate-ping" />
                 </div>
-                <p className="text-lg font-semibold text-neutral-900 mb-2">正在生成内容...</p>
-                <p className="text-sm text-neutral-500">AI 正在为你创作爆款文案</p>
+                <p className="text-lg font-bold text-[#1a1a1a] mb-2">正在生成内容...</p>
+                <p className="text-sm text-[#6b6b6b]">AI 正在为你创作爆款文案</p>
               </CardContent>
             </Card>
           </div>
@@ -247,21 +243,21 @@ function GeneratePage() {
 
   if (error) {
     return (
-      <main className="min-h-screen bg-[#fff7f8] p-4 md:p-8">
+      <main className="min-h-screen bg-[#faf9f7] p-4 md:p-8 pt-24">
         <div className="max-w-3xl mx-auto">
           <div className="flex items-center justify-center min-h-[60vh]">
-            <Card className="border-0 shadow-xl w-full max-w-md">
+            <Card className="border-0 shadow-xl w-full max-w-md bg-white/95 backdrop-blur-sm">
               <CardContent className="p-8 text-center">
-                <div className="w-20 h-20 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-4">
+                <div className="w-20 h-20 rounded-2xl bg-red-50 flex items-center justify-center mx-auto mb-4">
                   <span className="text-4xl">😢</span>
                 </div>
-                <h2 className="mb-2 text-xl font-bold text-neutral-900">生成失败</h2>
-                <p className="mb-6 text-sm text-neutral-500">{error}</p>
+                <h2 className="mb-2 text-xl font-bold text-[#1a1a1a]">生成失败</h2>
+                <p className="mb-6 text-sm text-[#6b6b6b]">{error}</p>
                 <div className="flex gap-3 justify-center">
-                  <Button variant="outline" onClick={() => navigate({ to: '/calendar' })}>
+                  <Button variant="outline" onClick={() => navigate({ to: '/calendar' })} className="rounded-xl">
                     返回日历
                   </Button>
-                  <Button onClick={handleRegenerate} className="bg-[#ff2442] hover:bg-[#e01f39]">
+                  <Button onClick={handleRegenerate} className="bg-[#dc2641] hover:bg-[#b91c36] rounded-xl">
                     <RefreshCw className="mr-2 h-4 w-4" />
                     重试
                   </Button>
@@ -279,60 +275,69 @@ function GeneratePage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#fff7f8] relative overflow-hidden">
-      {/* 背景装饰 */}
+    <main className="min-h-screen bg-[#faf9f7] relative overflow-hidden pt-24 pb-16">
+      {/* Background decoration */}
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-gradient-to-br from-[#ff2442]/5 to-[#fb7299]/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-0 -left-32 w-80 h-80 bg-gradient-to-tr from-[#fb7299]/5 to-[#ff6b6b]/5 rounded-full blur-3xl" />
+        <div className="absolute -top-40 -right-40 w-[500px] h-[500px] bg-gradient-to-br from-[#dc2641]/5 to-transparent rounded-full blur-3xl" />
+        <div className="absolute bottom-0 -left-32 w-[400px] h-[400px] bg-gradient-to-tr from-[#ff6b7a]/4 to-transparent rounded-full blur-3xl" />
       </div>
 
-      <div className="relative z-10 p-4 md:p-8">
+      <div className="relative z-10 px-4 md:px-8">
         <div className="max-w-3xl mx-auto">
-          {/* 返回按钮 */}
+          {/* Back button */}
           <div className="mb-6 opacity-0 animate-fade-in-up" style={{ animationFillMode: 'forwards' }}>
-            <Button variant="ghost" onClick={() => navigate({ to: '/calendar' })} className="text-neutral-500 hover:text-[#ff2442]">
+            <Button
+              variant="ghost"
+              onClick={() => navigate({ to: '/calendar' })}
+              className="text-[#6b6b6b] hover:text-[#dc2641] hover:bg-[#dc2641]/5 rounded-full px-4"
+            >
               <ChevronLeft className="mr-1 h-4 w-4" />
               返回日历
             </Button>
           </div>
 
-          {/* 选题信息卡片 */}
+          {/* Topic info card */}
           <Card
-            className="border-0 shadow-xl shadow-[#ff2442]/5 mb-6 overflow-hidden opacity-0 animate-fade-in-up"
+            className="border-0 shadow-xl shadow-black/5 mb-6 overflow-hidden opacity-0 animate-fade-in-up bg-white/95 backdrop-blur-sm"
             style={{ animationDelay: '0.1s', animationFillMode: 'forwards' }}
           >
-            <div className={cn('h-2 bg-gradient-to-r', typeStyle.gradient)} />
+            <div className={cn('h-1.5 bg-gradient-to-r', typeStyle.gradient)} />
             <CardContent className="p-6">
               <div className="flex flex-col sm:flex-row sm:items-center gap-4">
-                <div className={cn('inline-flex items-center gap-2 px-4 py-2 rounded-xl', typeStyle.bg, typeStyle.border)}>
+                <div className={cn('inline-flex items-center gap-2 px-4 py-2 rounded-xl', typeStyle.bg)}>
                   <TypeIcon className={cn('h-4 w-4', typeStyle.text)} />
                   <span className={cn('font-bold', typeStyle.text)}>
                     Day {planItem.day} · {planItem.type}
                   </span>
                 </div>
-                <h1 className="text-xl font-bold text-neutral-900">{planItem.topic}</h1>
+                <h1 className="text-xl font-bold text-[#1a1a1a]">{planItem.topic}</h1>
               </div>
-              <p className="mt-3 text-sm text-neutral-500">{planItem.intent}</p>
+              <p className="mt-3 text-sm text-[#6b6b6b]">{planItem.intent}</p>
             </CardContent>
           </Card>
 
-          {/* 生成的内容 */}
+          {/* Generated content */}
           <div className="space-y-4">
-            {/* 标题 */}
+            {/* Title */}
             <div className="opacity-0 animate-fade-in-up" style={{ animationDelay: '0.2s', animationFillMode: 'forwards' }}>
               <ContentCard title="标题" icon={FileText} copyText={generatedPost.title} onCopy={() => toast.success('标题已复制！')}>
-                <p className="text-xl font-bold text-neutral-900 leading-relaxed">{generatedPost.title}</p>
+                <p className="text-xl font-bold text-[#1a1a1a] leading-relaxed">{generatedPost.title}</p>
               </ContentCard>
             </div>
 
-            {/* 正文 */}
+            {/* Content */}
             <div className="opacity-0 animate-fade-in-up" style={{ animationDelay: '0.3s', animationFillMode: 'forwards' }}>
-              <ContentCard title="正文" icon={FileText} copyText={generatedPost.content} onCopy={() => toast.success('正文已复制！')}>
-                <div className="whitespace-pre-wrap text-neutral-700 leading-relaxed text-sm">{generatedPost.content}</div>
+              <ContentCard
+                title="正文"
+                icon={FileText}
+                copyText={generatedPost.content}
+                onCopy={() => toast.success('正文已复制！')}
+              >
+                <div className="whitespace-pre-wrap text-[#1a1a1a] leading-relaxed text-sm">{generatedPost.content}</div>
               </ContentCard>
             </div>
 
-            {/* 标签 */}
+            {/* Tags */}
             <div className="opacity-0 animate-fade-in-up" style={{ animationDelay: '0.4s', animationFillMode: 'forwards' }}>
               <ContentCard
                 title="标签"
@@ -344,16 +349,16 @@ function GeneratePage() {
               </ContentCard>
             </div>
 
-            {/* 图片建议 */}
+            {/* Image suggestions */}
             {generatedPost.imageSuggestions && generatedPost.imageSuggestions.length > 0 && (
               <div className="opacity-0 animate-fade-in-up" style={{ animationDelay: '0.5s', animationFillMode: 'forwards' }}>
-                <Card className="border-0 shadow-lg shadow-neutral-100">
-                  <CardHeader className="bg-neutral-50/50 border-b border-neutral-100 py-4">
-                    <div className="flex items-center gap-2">
-                      <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#ff2442]/10 to-[#fb7299]/10 flex items-center justify-center">
-                        <Image className="h-4 w-4 text-[#ff2442]" />
+                <Card className="border-0 shadow-lg shadow-black/5 bg-white/95 backdrop-blur-sm">
+                  <CardHeader className="bg-black/[0.02] border-b border-black/[0.06] py-4">
+                    <div className="flex items-center gap-3">
+                      <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#dc2641]/10 to-[#ff6b7a]/10 flex items-center justify-center">
+                        <Image className="h-4 w-4 text-[#dc2641]" />
                       </div>
-                      <CardTitle className="text-sm font-semibold text-neutral-600">图片建议</CardTitle>
+                      <CardTitle className="text-sm font-semibold text-[#1a1a1a]">图片建议</CardTitle>
                     </div>
                   </CardHeader>
                   <CardContent className="p-6">
@@ -363,7 +368,7 @@ function GeneratePage() {
               </div>
             )}
 
-            {/* 操作按钮 */}
+            {/* Action buttons */}
             <div
               className="flex flex-col sm:flex-row gap-3 pt-4 opacity-0 animate-fade-in-up"
               style={{ animationDelay: '0.6s', animationFillMode: 'forwards' }}
@@ -371,7 +376,7 @@ function GeneratePage() {
               <Button
                 onClick={handleCopyAll}
                 size="lg"
-                className="flex-1 h-14 text-base font-bold bg-gradient-to-r from-[#ff2442] to-[#fb7299] hover:from-[#e01f39] hover:to-[#e85f87] text-white shadow-lg shadow-[#ff2442]/25 btn-shine"
+                className="flex-1 h-14 text-base font-bold bg-gradient-to-r from-[#dc2641] to-[#ff6b7a] hover:from-[#b91c36] hover:to-[#e85a68] text-white shadow-lg shadow-[#dc2641]/25 btn-shine rounded-xl"
               >
                 <Copy className="mr-2 h-5 w-5" />
                 复制全部内容
@@ -382,7 +387,7 @@ function GeneratePage() {
                 disabled={regenerating}
                 size="lg"
                 variant="outline"
-                className="h-14 text-base font-semibold border-2 border-neutral-200 hover:border-[#ff2442]/50 hover:bg-[#ff2442]/5"
+                className="h-14 text-base font-semibold border-2 border-black/[0.08] hover:border-[#dc2641]/40 hover:bg-[#dc2641]/5 rounded-xl"
               >
                 {regenerating ? (
                   <>
@@ -391,18 +396,22 @@ function GeneratePage() {
                   </>
                 ) : (
                   <>
-                    <RefreshCw className="mr-2 h-5 w-5" />
+                    <Wand2 className="mr-2 h-5 w-5" />
                     重新生成
                   </>
                 )}
               </Button>
             </div>
 
-            {/* 提示 */}
-            <p className="text-center text-xs text-neutral-400 pt-2">点击任意复制按钮，内容将自动保存到剪贴板</p>
+            {/* Tip */}
+            <p className="text-center text-xs text-[#6b6b6b] pt-2">点击任意复制按钮，内容将自动保存到剪贴板</p>
           </div>
         </div>
       </div>
     </main>
   )
 }
+
+export const Route = createFileRoute('/generate/$day')({
+  component: GeneratePage,
+})

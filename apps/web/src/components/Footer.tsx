@@ -1,26 +1,29 @@
-import { Sparkles, Heart } from 'lucide-react'
+import { Sparkles, Heart, ArrowUpRight } from 'lucide-react'
 
 export default function Footer() {
   const year = new Date().getFullYear()
 
   return (
-    <footer className="bg-white border-t border-neutral-100">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+    <footer className="border-t border-black/[0.06] bg-[#faf9f7]/80 backdrop-blur-sm">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-6">
           {/* Logo and Copyright */}
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#ff2442] to-[#fb7299] flex items-center justify-center">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#dc2641] to-[#ff6b7a] flex items-center justify-center shadow-md shadow-[#dc2641]/15">
               <Sparkles className="h-4 w-4 text-white" />
             </div>
-            <p className="text-sm text-neutral-500">
-              &copy; {year} 小红书内容助手
-            </p>
+            <div className="flex flex-col">
+              <span className="text-sm font-bold text-[#1a1a1a]">小红书内容助手</span>
+              <p className="text-xs text-[#6b6b6b]">
+                &copy; {year} All rights reserved
+              </p>
+            </div>
           </div>
 
           {/* Tagline */}
-          <div className="flex items-center gap-2 text-sm text-neutral-400">
+          <div className="flex items-center gap-2 text-sm text-[#6b6b6b]">
             <span>用</span>
-            <Heart className="w-4 h-4 text-[#ff2442] fill-[#ff2442]" />
+            <Heart className="w-4 h-4 text-[#dc2641] fill-[#dc2641]" />
             <span>和 AI 驱动创作</span>
           </div>
 
@@ -28,15 +31,17 @@ export default function Footer() {
           <div className="flex items-center gap-6 text-sm">
             <a
               href="#"
-              className="text-neutral-500 hover:text-[#ff2442] transition-colors"
+              className="group flex items-center gap-1 text-[#6b6b6b] hover:text-[#dc2641] transition-colors duration-200"
             >
               隐私政策
+              <ArrowUpRight className="w-3 h-3 opacity-0 -translate-y-1 translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-200" />
             </a>
             <a
               href="#"
-              className="text-neutral-500 hover:text-[#ff2442] transition-colors"
+              className="group flex items-center gap-1 text-[#6b6b6b] hover:text-[#dc2641] transition-colors duration-200"
             >
               使用条款
+              <ArrowUpRight className="w-3 h-3 opacity-0 -translate-y-1 translate-x-1 group-hover:opacity-100 group-hover:translate-y-0 group-hover:translate-x-0 transition-all duration-200" />
             </a>
           </div>
         </div>
